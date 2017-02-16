@@ -40,7 +40,7 @@ $config['base_url'] = "$root";
 | variable so that it is blank.
 |
 */
-$config['index_page'] = '';
+$config['index_page'] = 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -241,7 +241,7 @@ $config['log_threshold'] = (ENVIRONMENT <> 'production') ? array(1, 2) : 0;
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = APPPATH.'logs/'.date('Y/m').'/';
+$config['log_path'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -360,13 +360,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 \$encryption_key = '{$encryption_key}';
 
-/* End of file: encryption_key.php */
-/* Location: ./cibase/app/config/encryption_key.php */
 EOD;
     fwrite($file, $content);
     fclose($file);
 }
-$config['encryption_key'] = hex2bin($encryption_key);
+$config['encryption_key'] = hex2bin(@$encryption_key);
 
 /*
 |--------------------------------------------------------------------------

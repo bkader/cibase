@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -143,6 +107,369 @@ class CI_URI {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Filter URI
+	 *
+	 * Filters segments for malicious characters.
+	 *
+	 * @param	string	$str
+	 * @return	void
+	 */
+	public function filter_uri(&$str)
+	{
+		if ( ! empty($str) && ! empty($this->_permitted_uri_chars) && ! preg_match('/^['.$this->_permitted_uri_chars.']+$/i'.(UTF8_ENABLED ? 'u' : ''), $str))
+		{
+			show_error('The URI you submitted has disallowed characters.', 400);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch URI Segment
+	 *
+	 * @see		CI_URI::$segments
+	 * @param	int		$n		Index
+	 * @param	mixed		$no_result	What to return if the segment index is not found
+	 * @return	mixed
+	 */
+	public function segment($n, $no_result = NULL)
+	{
+		return isset($this->segments[$n]) ? $this->segments[$n] : $no_result;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Segment Array
+	 *
+	 * @return	array	CI_URI::$segments
+	 */
+	public function segment_array()
+	{
+		return $this->segments;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch URI "routed" Segment
+	 *
+	 * Returns the re-routed URI segment (assuming routing rules are used)
+	 * based on the index provided. If there is no routing, will return
+	 * the same result as CI_URI::segment().
+	 *
+	 * @see		CI_URI::$rsegments
+	 * @see		CI_URI::segment()
+	 * @param	int		$n		Index
+	 * @param	mixed		$no_result	What to return if the segment index is not found
+	 * @return	mixed
+	 */
+	public function rsegment($n, $no_result = NULL)
+	{
+		return isset($this->rsegments[$n]) ? $this->rsegments[$n] : $no_result;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * URI to assoc
+	 *
+	 * Generates an associative array of URI data starting at the supplied
+	 * segment index. For example, if this is your URI:
+	 *
+	 *	example.com/user/search/name/joe/location/UK/gender/male
+	 *
+	 * You can use this method to generate an array with this prototype:
+	 *
+	 *	array (
+	 *		name => joe
+	 *		location => UK
+	 *		gender => male
+	 *	 )
+	 *
+	 * @param	int	$n		Index (default: 3)
+	 * @param	array	$default	Default values
+	 * @return	array
+	 */
+	public function uri_to_assoc($n = 3, $default = array())
+	{
+		return $this->_uri_to_assoc($n, $default, 'segment');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Routed URI to assoc
+	 *
+	 * Identical to CI_URI::uri_to_assoc(), only it uses the re-routed
+	 * segment array.
+	 *
+	 * @see		CI_URI::uri_to_assoc()
+	 * @param 	int	$n		Index (default: 3)
+	 * @param 	array	$default	Default values
+	 * @return 	array
+	 */
+	public function ruri_to_assoc($n = 3, $default = array())
+	{
+		return $this->_uri_to_assoc($n, $default, 'rsegment');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Assoc to URI
+	 *
+	 * Generates a URI string from an associative array.
+	 *
+	 * @param	array	$array	Input array of key/value pairs
+	 * @return	string	URI string
+	 */
+	public function assoc_to_uri($array)
+	{
+		$temp = array();
+		foreach ((array) $array as $key => $val)
+		{
+			$temp[] = $key;
+			$temp[] = $val;
+		}
+
+		return implode('/', $temp);
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Creates a url with the given uri, including the base url
+	 *
+	 * @param   string  $uri            The uri to create the URL for
+	 * @param   array   $variables      Some variables for the URL
+	 * @param   array   $get_variables  Any GET urls to append via a query string
+	 * @param   bool    $secure         If FALSE, force http. If true, force https
+	 * @return  string
+	 */
+	public function create($uri = null, $variables = array(), $get_variables = array(), $secure = null)
+	{
+		$url = '';
+
+		empty($uri) && $uri = $this->uri_string();
+
+		// If the given uri is not a full URL
+		if( ! preg_match("#^(http|https|ftp)://#i", $uri))
+		{
+			$url .= $this->config->get('base_url');
+
+			if ($index_file = $this->config->get('index_file'))
+			{
+				$url .= $index_file.'/';
+			}
+		}
+		$url .= ltrim($uri, '/');
+
+		// stick a url suffix onto it if defined and needed
+		if ($url_suffix = $this->config->get('url_suffix', FALSE) && substr($url, -1) != '/')
+		{
+			$current_suffix = strrchr($url, '.');
+			if ( ! $current_suffix or strpos($current_suffix, '/') !== FALSE)
+			{
+				$url .= $url_suffix;
+			}
+		}
+
+		if ( ! empty($get_variables))
+		{
+			$char = strpos($url, '?') === FALSE ? '?' : '&';
+			if (is_string($get_variables))
+			{
+				$url .= $char.str_replace('%3A', ':', $get_variables);
+			}
+			else
+			{
+				$url .= $char.str_replace('%3A', ':', http_build_query($get_variables));
+			}
+		}
+
+		array_walk(
+			$variables,
+			function ($val, $key) use (&$url)
+			{
+				$url = str_replace(':'.$key, $val, $url);
+			}
+		);
+
+		is_bool($secure) && $url = http_build_url($url, array('scheme' => $secure ? 'https' : 'http'));
+
+		return $url;
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Builds a query string by merging all array and string values passed. If
+	 * a string is passed, it will be assumed to be a switch, and converted
+	 * to "string=1".
+	 *
+	 * @param array|string Array or string to merge
+	 * @param array|string ...
+	 *
+	 * @return string
+	 */
+	public function build_query_string()
+	{
+		$params = array();
+
+		foreach (func_get_args() as $arg)
+		{
+			$arg = is_array($arg) ? $arg : array($arg => '1');
+
+			$params = array_merge($params, $arg);
+		}
+
+		return http_build_query($params);
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Returns current URL
+	 * @access 	public
+	 * @param 	none
+	 * @return 	string
+	 */
+	public function current()
+	{
+		return $this->create();
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Updates the query string of the current or passed URL with the data passed
+	 *
+	 * @param  array|string  $vars    Assoc array of GET variables, or a get variable name
+	 * @param  string|mixed  $uri     Optional URI to use if $vars is an array, otherwise the get variable name
+	 * @param  bool          $secure  If false, force http. If true, force https
+	 *
+	 * @return string
+	 */
+	public function update_query_string($vars = array(), $uri = null, $secure = null)
+	{
+		// unify the input data
+		if ( ! is_array($vars))
+		{
+			$vars = array($vars => $uri);
+			$uri = null;
+		}
+
+		// if we have a custom URI, use that
+		if ($uri === null)
+		{
+			// use the current URI if not is passed
+			$uri = $this->current();
+
+			global $IN;
+			// merge them with the existing query string data
+			$vars = array_merge($IN->get(NULL, TRUE), $vars);
+		}
+
+		// return the updated uri
+		return $this->create($uri, array(), $vars, $secure);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Slash segment
+	 *
+	 * Fetches an URI segment with a slash.
+	 *
+	 * @param	int	$n	Index
+	 * @param	string	$where	Where to add the slash ('trailing' or 'leading')
+	 * @return	string
+	 */
+	public function slash_segment($n, $where = 'trailing')
+	{
+		return $this->_slash_segment($n, $where, 'segment');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Slash routed segment
+	 *
+	 * Fetches an URI routed segment with a slash.
+	 *
+	 * @param	int	$n	Index
+	 * @param	string	$where	Where to add the slash ('trailing' or 'leading')
+	 * @return	string
+	 */
+	public function slash_rsegment($n, $where = 'trailing')
+	{
+		return $this->_slash_segment($n, $where, 'rsegment');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Routed Segment Array
+	 *
+	 * @return	array	CI_URI::$rsegments
+	 */
+	public function rsegment_array()
+	{
+		return $this->rsegments;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Total number of segments
+	 *
+	 * @return	int
+	 */
+	public function total_segments()
+	{
+		return count($this->segments);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Total number of routed segments
+	 *
+	 * @return	int
+	 */
+	public function total_rsegments()
+	{
+		return count($this->rsegments);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch URI string
+	 *
+	 * @return	string	CI_URI::$uri_string
+	 */
+	public function uri_string()
+	{
+		return $this->uri_string;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch Re-routed URI string
+	 *
+	 * @return	string
+	 */
+	public function ruri_string()
+	{
+		return ltrim(load_class('Router', 'core')->directory, '/').implode('/', $this->rsegments);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Set URI String
 	 *
 	 * @param 	string	$str
@@ -201,7 +528,7 @@ class CI_URI {
 			return '';
 		}
 
-		// parse_url() returns false if no host is present, but the path or query string
+		// parse_url() returns FALSE if no host is present, but the path or query string
 		// contains a colon followed by a number
 		$uri = parse_url('http://dummy'.$_SERVER['REQUEST_URI']);
 		$query = isset($uri['query']) ? $uri['query'] : '';
@@ -316,104 +643,6 @@ class CI_URI {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Filter URI
-	 *
-	 * Filters segments for malicious characters.
-	 *
-	 * @param	string	$str
-	 * @return	void
-	 */
-	public function filter_uri(&$str)
-	{
-		if ( ! empty($str) && ! empty($this->_permitted_uri_chars) && ! preg_match('/^['.$this->_permitted_uri_chars.']+$/i'.(UTF8_ENABLED ? 'u' : ''), $str))
-		{
-			show_error('The URI you submitted has disallowed characters.', 400);
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch URI Segment
-	 *
-	 * @see		CI_URI::$segments
-	 * @param	int		$n		Index
-	 * @param	mixed		$no_result	What to return if the segment index is not found
-	 * @return	mixed
-	 */
-	public function segment($n, $no_result = NULL)
-	{
-		return isset($this->segments[$n]) ? $this->segments[$n] : $no_result;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch URI "routed" Segment
-	 *
-	 * Returns the re-routed URI segment (assuming routing rules are used)
-	 * based on the index provided. If there is no routing, will return
-	 * the same result as CI_URI::segment().
-	 *
-	 * @see		CI_URI::$rsegments
-	 * @see		CI_URI::segment()
-	 * @param	int		$n		Index
-	 * @param	mixed		$no_result	What to return if the segment index is not found
-	 * @return	mixed
-	 */
-	public function rsegment($n, $no_result = NULL)
-	{
-		return isset($this->rsegments[$n]) ? $this->rsegments[$n] : $no_result;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * URI to assoc
-	 *
-	 * Generates an associative array of URI data starting at the supplied
-	 * segment index. For example, if this is your URI:
-	 *
-	 *	example.com/user/search/name/joe/location/UK/gender/male
-	 *
-	 * You can use this method to generate an array with this prototype:
-	 *
-	 *	array (
-	 *		name => joe
-	 *		location => UK
-	 *		gender => male
-	 *	 )
-	 *
-	 * @param	int	$n		Index (default: 3)
-	 * @param	array	$default	Default values
-	 * @return	array
-	 */
-	public function uri_to_assoc($n = 3, $default = array())
-	{
-		return $this->_uri_to_assoc($n, $default, 'segment');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Routed URI to assoc
-	 *
-	 * Identical to CI_URI::uri_to_assoc(), only it uses the re-routed
-	 * segment array.
-	 *
-	 * @see		CI_URI::uri_to_assoc()
-	 * @param 	int	$n		Index (default: 3)
-	 * @param 	array	$default	Default values
-	 * @return 	array
-	 */
-	public function ruri_to_assoc($n = 3, $default = array())
-	{
-		return $this->_uri_to_assoc($n, $default, 'rsegment');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Internal URI-to-assoc
 	 *
 	 * Generates a key/value pair from the URI string or re-routed URI string.
@@ -486,60 +715,6 @@ class CI_URI {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Assoc to URI
-	 *
-	 * Generates a URI string from an associative array.
-	 *
-	 * @param	array	$array	Input array of key/value pairs
-	 * @return	string	URI string
-	 */
-	public function assoc_to_uri($array)
-	{
-		$temp = array();
-		foreach ((array) $array as $key => $val)
-		{
-			$temp[] = $key;
-			$temp[] = $val;
-		}
-
-		return implode('/', $temp);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Slash segment
-	 *
-	 * Fetches an URI segment with a slash.
-	 *
-	 * @param	int	$n	Index
-	 * @param	string	$where	Where to add the slash ('trailing' or 'leading')
-	 * @return	string
-	 */
-	public function slash_segment($n, $where = 'trailing')
-	{
-		return $this->_slash_segment($n, $where, 'segment');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Slash routed segment
-	 *
-	 * Fetches an URI routed segment with a slash.
-	 *
-	 * @param	int	$n	Index
-	 * @param	string	$where	Where to add the slash ('trailing' or 'leading')
-	 * @return	string
-	 */
-	public function slash_rsegment($n, $where = 'trailing')
-	{
-		return $this->_slash_segment($n, $where, 'rsegment');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Internal Slash segment
 	 *
 	 * Fetches an URI Segment and adds a slash to it.
@@ -566,78 +741,6 @@ class CI_URI {
 		}
 
 		return $leading.$this->$which($n).$trailing;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Segment Array
-	 *
-	 * @return	array	CI_URI::$segments
-	 */
-	public function segment_array()
-	{
-		return $this->segments;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Routed Segment Array
-	 *
-	 * @return	array	CI_URI::$rsegments
-	 */
-	public function rsegment_array()
-	{
-		return $this->rsegments;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Total number of segments
-	 *
-	 * @return	int
-	 */
-	public function total_segments()
-	{
-		return count($this->segments);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Total number of routed segments
-	 *
-	 * @return	int
-	 */
-	public function total_rsegments()
-	{
-		return count($this->rsegments);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch URI string
-	 *
-	 * @return	string	CI_URI::$uri_string
-	 */
-	public function uri_string()
-	{
-		return $this->uri_string;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch Re-routed URI string
-	 *
-	 * @return	string
-	 */
-	public function ruri_string()
-	{
-		return ltrim(load_class('Router', 'core')->directory, '/').implode('/', $this->rsegments);
 	}
 
 }

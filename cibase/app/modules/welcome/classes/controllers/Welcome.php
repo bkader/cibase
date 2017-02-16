@@ -28,8 +28,6 @@ class Welcome extends MY_Controller {
 	 */
 	public function index()
 	{
-		$this->template
-				->set_title(__('welcome_page_title', NULL, 'Welcome to CodeIgniter'))
-				->load('welcome_message');
+		$this->template->load('welcome_message');
 	}
 }

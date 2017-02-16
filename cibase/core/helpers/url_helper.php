@@ -47,6 +47,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link		https://codeigniter.com/user_guide/helpers/url_helper.html
  */
 
+
+if ( ! function_exists('create_url'))
+{
+	/**
+	 * Creates a url with the given uri, including the base url
+	 *
+	 * @param   string  $uri            The uri to create the URL for
+	 * @param   array   $variables      Some variables for the URL
+	 * @param   array   $get_variables  Any GET urls to append via a query string
+	 * @param   bool    $secure         If false, force http. If true, force https
+	 * @return  string
+	 */
+	function create_url($uri = null, $variables = array(), $get_variables = array(), $secure = null)
+	{
+		return get_instance()->uri->create($uri, $variables, $get_variables, $secure);
+	}
+}
 // ------------------------------------------------------------------------
 
 if ( ! function_exists('site_url'))

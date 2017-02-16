@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -206,10 +170,25 @@ class CI_Config {
 		show_error('The configuration file '.$file.'.php does not exist.');
 	}
 
-	// --------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Fetch a config file item
+	 * @param 	string 	$item 		string or dot-notation string
+	 * @param 	mixed 	$default 	value to use if no item found
+	 * @return 	mixed
+	 *
+	 * @author 	Kader Bouyakoub <bkader@mail.com>
+	 * @link 	https://github.com/bkader
+	 * @link 	https://twitter.com/KaderBouyakoub
+	 */
+	public function get($item, $default = FALSE)
+	{
+		return $this->arr->get($this->config, $item, $default);
+	}
+
+	/**
+	 * Fetch a config file item (Kept for backward compatibility)
 	 *
 	 * @param	string	$item	Config item name
 	 * @param	string	$index	Index name
@@ -217,7 +196,38 @@ class CI_Config {
 	 */
 	public function item($item, $default = FALSE)
 	{
-		return $this->arr->get($this->config, $item, $default);
+		return $this->get($item, $default);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Sets a config file item using dot-notation
+	 *
+	 * @access 	public
+	 * @param 	string 	$item 	dot-notation string to access item
+	 * @param 	mixed 	$value 	config item's new value
+	 * @return 	void
+	 *
+	 * @author 	Kader Bouyakoub <bkader@mail.com>
+	 * @link 	https://github.com/bkader
+	 * @link 	https://twitter.com/KaderBouyakoub
+	 */
+	public function set($item, $value = NULL)
+	{
+		$this->arr->set($this->config, $item, $value);
+	}
+
+	/**
+	 * Set a config file item (kept for backward compatibility)
+	 *
+	 * @param	string	$item	Config item key
+	 * @param	string	$value	Config item value
+	 * @return	void
+	 */
+	public function set_item($item, $value)
+	{
+		$this->set($item, $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -380,20 +390,6 @@ class CI_Config {
 		return $this->slash_item('base_url').end($x).'/';
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set a config file item
-	 *
-	 * @param	string	$item	Config item key
-	 * @param	string	$value	Config item value
-	 * @return	void
-	 */
-	public function set_item($item, $value)
-	{
-		$this->arr->set($this->config, $item, $value);
-	}
-
 	// ------------------------------------------------------------------------
 
     /**
@@ -404,31 +400,54 @@ class CI_Config {
      */
 	public function language($key = NULL)
     {
+        // Prepare the language code
         $lang = $this->item('language');
 
-        if ( ! empty($args = func_get_args())) {
+        // If any arguments are passed
+        if ( ! empty($args = func_get_args()))
+        {
+            is_array($args[0]) && $args = $args[0];
 
-        	$lang = $this->languages(TRUE)[$lang];
+            switch (count($args)) {
+                case 1:
+                    // Ignore arguments below
+                    if (in_array($args[0], array(FALSE, NULL)))
+                    {
+                        continue;
+                    }
+                    // If TRUE is passed, the full array is returned
+                    elseif ($args[0] === TRUE)
+                    {
+                        $lang = $this->_get_language($this->item('language'));
+                    }
+                    // If none of the above, we continue
+                    else {
+                        goto other;
+                    }
+                    break;
 
-        	if (is_array($key))
-        	{
-        		$_lang = array();
-        		foreach ($key as $k)
-        		{
-        			if (isset($lang[$k]))
-        			{
-        				$_lang[$k] = $lang[$k];
-        			}
-        		}
+                default:
+                    other:
+                    $language = $this->_get_language($this->item('language'));
+                    $_lang = array();
 
-        		empty($_lang) OR $lang = $_lang;
-        	}
+                    // Loop through arguments and fill $_lang array only if the key exists
+                    foreach ($args as $arg)
+                    {
+                        if (isset($language[$arg]))
+                        {
+                            $_lang[$arg] = $language[$arg];
+                        }
+                    }
 
-        	elseif (isset($lang[$key]))
-        	{
-        		$lang = $lang[$key];
-        	}
-
+                    // If $_lang is not empty, we replace $lang by it.
+                    // If a single key is found, we return it as it is.
+                    if ( ! empty($_lang))
+                    {
+                        $lang = (count($_lang) == 1) ? array_pop($_lang) : $_lang;
+                    }
+                    break;
+            }
         }
 
         return $lang;
@@ -444,51 +463,68 @@ class CI_Config {
      */
     public function languages()
     {
-        // We prepare our array of languages codes
-        $languages = $this->item('languages');
+        $langs = $this->item('languages');
 
-        // If any arguments are passed to this method
-        if ( ! empty($args = func_get_args())) {
+        if ( ! empty($args = func_get_args()))
+        {
+            $args = (array) $args;
+            is_array($args[0]) && $args = $args[0];
 
-        	// Grab languages details
-        	$langs = require_once BASEPATH.'vendor'.DS.'languages.php';
-
-            // Prepare an empty array and fill it after
-            $_languages = array();
-
-            // Make sure $args is not a multidimensional array
-            isset($args[0]) && is_array($args[0]) && $args = $args[0];
-
-            // We walk through languages codes and fill our array
-            foreach ($languages as $code) {
-                
-                // We start by assigning the key with an empty value
-                $_languages[$code] = array();
-
-                // We walk through passed arguments
-                foreach ($args as $arg) {
-
-                    // In case of a TRUE bool, we return all languages details.
-                    // In case of a FALSE bool, we return an array of 'code' => 'name_en'
-                    // In case of any requested key, we fill $_languages array.
-                    // If none of the above, we simply return languages codes.
-
-                    if (is_bool($arg) && (bool) $arg === TRUE) {
-                        $_languages[$code] = $langs[$code];
-                    } elseif (is_bool($arg) && (bool) $arg === FALSE) {
-                        $_languages[$code] = $langs[$code]['name_en'];
-                    } elseif (array_key_exists($arg, $langs[$code])) {
-                        $_languages[$code][$arg] = $langs[$code][$arg];
+            switch (count($args)) {
+                case 1:
+                    // Ignore arguments below
+                    if (in_array($args[0], array(FALSE, NULL)))
+                    {
+                        continue;
                     }
-                }
-            }
+                    // If TRUE is passed, the full array is returned
+                    elseif ($args[0] === TRUE)
+                    {
+                    	$_langs = array();
+                    	foreach ($langs as $code)
+                    	{
+                    		$_langs[$code] = $this->_get_language($code);
+                    	}
+                    	$langs = $_langs;
+                    }
+                    // If none of the above, we continue
+                    else {
+                        goto other;
+                    }
+                    break;
 
-            // replace our $languages array with $_languages
-            $languages  = $_languages;
-            unset($_languages);
+                default:
+                    other:
+                    $languages = $this->_get_language();
+                    $_langs = array();
+
+                    foreach ($langs as $code)
+                    {
+                    	foreach ($args as $arg)
+                    	{
+                    		if (isset($languages[$code][$arg]))
+                    		{
+                    			$_langs[$code][$arg] = $languages[$code][$arg];
+                    		}
+                    	}
+                    }
+
+                    empty($_langs) OR $langs = $_langs;
+
+                    // If a single item is inside an array, use it as the value
+                    foreach ($langs as $code => &$lang)
+                    {
+                    	if (count($lang) == 1)
+                    	{
+                    		$lang = array_pop($lang);
+                    	}
+                    }
+
+                    break;
+            }
         }
 
-        return $languages;
+        return $langs;
     }
 
     // ------------------------------------------------------------------------
@@ -515,5 +551,25 @@ class CI_Config {
     public function valid_language($code)
     {
     	return (in_array($code, $this->languages()));
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Returns an array of languages details
+     * @access  protected
+     * @param   string  $code   language's code to retrieve
+     * @return  array
+     */
+    protected function _get_language($code = NULL)
+    {
+        $lang = require BASEPATH.'vendor/languages.php';
+
+        if ($code && isset($lang[$code]))
+        {
+            $lang = $lang[$code];
+        }
+
+        return $lang;
     }
 }

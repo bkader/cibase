@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -245,7 +209,7 @@ class CI_Lang {
 
     /**
      * Fetches a single line of text from the language array
-     * 
+     *
      * @param   string  $line       Language line key
      * @param   mixed   $args       string, integer or array
      * @param   mixed   $default    to be used in case of fail
@@ -319,7 +283,7 @@ class CI_Lang {
 
     /**
      * Singular & plural form of language line
-     * 
+     *
      * @access  public
      * @param   string  $singular   singular form of the line
      * @param   string  $plural     plural form of the line
@@ -359,6 +323,8 @@ class CI_Lang {
         return $this->line($line.':'.$context, $args, $default);
     }
 
+    // ------------------------------------------------------------------------
+
     /**
      * Returns an array of available languages codes if no parameter is passed,
      * or an array of selected languages details.
@@ -373,29 +339,7 @@ class CI_Lang {
      */
     public function languages()
     {
-        $langs = $this->config->item('languages');
-
-        if ( ! empty($args = func_get_args()))
-        {
-            $args = (array) $args;
-            is_array($args[0]) && $args = $args[0];
-            $_langs = array();
-
-            foreach ($langs as $code)
-            {
-                foreach ($args as $arg)
-                {
-                    if (isset($this->_get_language($code)[$arg]))
-                    {
-                        $_langs[$code][$arg] = $this->_get_language($code)[$arg];
-                    }
-                }
-            }
-
-            $langs = $_langs;
-        }
-
-        return $langs;
+    	return call_user_func_array(array($this->config, 'languages'), func_get_args());
     }
 
     /**
@@ -414,74 +358,32 @@ class CI_Lang {
      */
     public function language()
     {
-        // Prepare the language code
-        $lang = $this->config->item('language');
-
-        // If any arguments are passed
-        if ( ! empty($args = func_get_args()))
-        {
-            is_array($args[0]) && $args = $args[0];
-
-            switch (count($args)) {
-                case 1:
-                    // Ignore arguments below
-                    if (in_array($args[0], array(FALSE, NULL)))
-                    {
-                        continue;
-                    }
-                    // If TRUE is passed, the full array is returned
-                    elseif ($args[0] === TRUE)
-                    {
-                        $lang = $this->_get_language($this->config->item('language'));
-                    }
-                    // If none of the above, we continue
-                    else {
-                        goto other;
-                    }
-                    break;
-
-                default:
-                    other:
-                    $language = $this->_get_language($this->config->item('language'));
-                    $_lang = array();
-
-                    // Loop through arguments and fill $_lang array only if the key exists
-                    foreach ($args as $arg)
-                    {
-                        if (isset($language[$arg]))
-                        {
-                            $_lang[$arg] = $language[$arg];
-                        }
-                    }
-
-                    // If $_lang is not empty, we replace $lang by it.
-                    // If a single key is found, we return it as it is.
-                    if ( ! empty($_lang))
-                    {
-                        $lang = (count($_lang) == 1) ? array_pop($_lang) : $_lang;
-                    }
-                    break;
-            }
-        }
-
-        return $lang;
+    	return call_user_func_array(array($this->config, 'language'), func_get_args());
     }
 
+    // ------------------------------------------------------------------------
+
     /**
-     * Returns an array of languages details
-     * @access  protected
-     * @param   string  $code   language's code to retrieve
-     * @return  array
+     * Returns TRUE if the website is multilingual
+     * @access  public
+     * @param   none
+     * @return  boolean
      */
-    protected function _get_language($code = 'en')
+    public function multilingual()
     {
-        $lang = require BASEPATH.'vendor/languages.php';
+    	return $this->config->multilingual();
+    }
 
-        if ($code && isset($lang[$code]))
-        {
-            $lang = $lang[$code];
-        }
+    // ------------------------------------------------------------------------
 
-        return $lang;
+    /**
+     * Returns TRUE if the language is available
+     * @access  public
+     * @param   string  $code   language code
+     * @return  boolean
+     */
+    public function valid_language($code)
+    {
+    	return $this->config->valid_language($code);
     }
 }

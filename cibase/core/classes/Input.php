@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -79,7 +43,7 @@ class CI_Input {
 	 * Enable XSS flag
 	 *
 	 * Determines whether the XSS filter is always active when
-	 * GET, POST or COOKIE data is encountered.
+	 * GET, POST OR COOKIE data is encountered.
 	 * Set automatically based on config setting.
 	 *
 	 * @var	bool
@@ -261,7 +225,7 @@ class CI_Input {
 	/**
 	 * Fetch an item from POST data with fallback to GET
 	 *
-	 * @param	string	$index		Index for item to be fetched from $_POST or $_GET
+	 * @param	string	$index		Index for item to be fetched from $_POST OR $_GET
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
@@ -277,7 +241,7 @@ class CI_Input {
 	/**
 	 * Fetch an item from GET data with fallback to POST
 	 *
-	 * @param	string	$index		Index for item to be fetched from $_GET or $_POST
+	 * @param	string	$index		Index for item to be fetched from $_GET OR $_POST
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
@@ -321,7 +285,7 @@ class CI_Input {
 	/**
 	 * Fetch an item from the php://input stream
 	 *
-	 * Useful when you need to access PUT, DELETE or PATCH request data.
+	 * Useful when you need to access PUT, DELETE OR PATCH request data.
 	 *
 	 * @param	string	$index		Index for item to be fetched
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
@@ -346,10 +310,10 @@ class CI_Input {
 	/**
 	 * Set cookie
 	 *
-	 * Accepts an arbitrary number of parameters (up to 7) or an associative
+	 * Accepts an arbitrary number of parameters (up to 7) OR an associative
 	 * array in the first parameter containing all the values.
 	 *
-	 * @param	string|mixed[]	$name		Cookie name or an array containing parameters
+	 * @param	string|mixed[]	$name		Cookie name OR an array containing parameters
 	 * @param	string		$value		Cookie value
 	 * @param	int		$expire		Cookie expiration time in seconds
 	 * @param	string		$domain		Cookie domain (e.g.: '.yourdomain.com')
@@ -460,7 +424,7 @@ class CI_Input {
 			{
 				for ($i = 0, $c = count($proxy_ips); $i < $c; $i++)
 				{
-					// Check if we have an IP address or a subnet
+					// Check if we have an IP address OR a subnet
 					if (strpos($proxy_ips[$i], '/') === FALSE)
 					{
 						// An IP address (and not a subnet) is specified.
@@ -547,13 +511,25 @@ class CI_Input {
 		return $this->ip_address;
 	}
 
+	/**
+	 * Get the public ip address of the user.
+	 *
+	 * @param   string $default
+	 * @return  array|string
+	 */
+	public function ip($default = '0.0.0.0')
+	{
+		$ip = $this->server('REMOTE_ADDR', TRUE);
+		return $ip ?? $default;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * Validate IP Address
 	 *
 	 * @param	string	$ip	IP address
-	 * @param	string	$which	IP protocol: 'ipv4' or 'ipv6'
+	 * @param	string	$which	IP protocol: 'ipv4' OR 'ipv6'
 	 * @return	bool
 	 */
 	public function valid_ip($ip, $which = '')
@@ -574,16 +550,49 @@ class CI_Input {
 		return (bool) filter_var($ip, FILTER_VALIDATE_IP, $which);
 	}
 
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Return's the protocol that the request was made with
+	 *
+	 * @return  string
+	 */
+	public function protocol()
+	{
+		if ($this->server('HTTPS') == 'on' OR
+			$this->server('HTTPS') == 1 OR
+			$this->server('SERVER_PORT') == 443)
+		{
+			return 'https';
+		}
+
+		return 'http';
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * Fetch User Agent string
 	 *
-	 * @return	string|null	User Agent string or NULL if it doesn't exist
+	 * @return	string|null	User Agent string OR NULL if it doesn't exist
 	 */
 	public function user_agent($xss_clean = NULL)
 	{
 		return $this->_fetch_from_array($_SERVER, 'HTTP_USER_AGENT', $xss_clean);
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Return's the referrer
+	 *
+	 * @param   string $default
+	 * @return  string
+	 */
+	public function referrer($default = '')
+	{
+		$ref = $this->server('HTTP_REFERER', TRUE);
+		return $ref ?? $default;
 	}
 
 	// --------------------------------------------------------------------
@@ -627,7 +636,7 @@ class CI_Input {
 		if (is_array($_COOKIE))
 		{
 			// Also get rid of specially treated cookies that might be set by a server
-			// or silly application, that are of no use to a CI application anyway
+			// OR silly application, that are of no use to a CI application anyway
 			// but that when present will trip our 'Disallowed Key Characters' alarm
 			// http://www.ietf.org/rfc/rfc2109.txt
 			// note that the key names below are single quoted strings, and are not PHP variables
@@ -797,7 +806,7 @@ class CI_Input {
 	 *
 	 * @param	string		$index		Header name
 	 * @param	bool		$xss_clean	Whether to apply XSS filtering
-	 * @return	string|null	The requested header on success or NULL on failure
+	 * @return	string|null	The requested header on success OR NULL on failure
 	 */
 	public function get_request_header($index, $xss_clean = FALSE)
 	{
@@ -860,7 +869,7 @@ class CI_Input {
 	 *
 	 * Return the request method
 	 *
-	 * @param	bool	$upper	Whether to return in upper or lower case
+	 * @param	bool	$upper	Whether to return in upper OR lower case
 	 *				(default: FALSE)
 	 * @return 	string
 	 */
