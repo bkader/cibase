@@ -81,8 +81,9 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'en';
+$config['language']	= 'fr';
 $config['languages'] = array('en', 'fr');
+$config['language_fallback'] = 'en';
 
 /*
 |--------------------------------------------------------------------------
@@ -573,4 +574,4 @@ $config['proxy_ips'] = '';
 | directory.
 |
 */
-$config['modules_locations'] = array(APPPATH.'modules/' => '../modules/');
+$config['modules_locations'] = array(APPPATH.'modules/');

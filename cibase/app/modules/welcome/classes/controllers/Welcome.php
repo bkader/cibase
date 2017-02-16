@@ -1,7 +1,15 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+(defined('BASEPATH')) OR exit('No direct script access allowed');
 
 class Welcome extends MY_Controller {
+
+	/**
+	 * Autoload files
+	 * @var array
+	 */
+	protected $autoload = array(
+		'lang' => 'welcome',
+	);
 
 	/**
 	 * Index Page for this controller.
@@ -20,7 +28,8 @@ class Welcome extends MY_Controller {
 	 */
 	public function index()
 	{
-		$this->load->library('form_validation');
-		$this->template->load('welcome_message');
+		$this->template
+				->set_title(__('welcome_page_title', NULL, 'Welcome to CodeIgniter'))
+				->load('welcome_message');
 	}
 }

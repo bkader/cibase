@@ -64,9 +64,21 @@ class CI_Lang {
 
 	/**
 	 * Holds Config class object
-	 * @var array
+	 * @var object
 	 */
 	protected $config;
+
+    /**
+     * Holds Arr class object
+     * @var object
+     */
+    protected $arr;
+
+    /**
+     * Holds fallback language
+     * @var string
+     */
+    protected $fallback = 'en';
 
 	/**
 	 * Class constructor
@@ -75,7 +87,9 @@ class CI_Lang {
 	 */
 	public function __construct()
 	{
-		$this->config = load_class('Config', 'core');
+		$this->config =& load_class('Config', 'core');
+        $this->arr =& load_class('Arr', 'core');
+        $this->fallback = $this->config->item('language_fallback') ?: 'en';
 
 		log_message('info', 'Language Class Initialized');
 	}
@@ -92,14 +106,14 @@ class CI_Lang {
 	 *
 	 * @return	void|string[]	Array containing translations, if $return is set to TRUE
 	 */
-    public function load($langfile, $idiom = '', $return = FALSE, $add_suffix = TRUE, $alt_path = '')
+    public function load($langfile, $idiom = '', $return = FALSE, $alt_path = '')
     {
         // In case of multiple files
         if (is_array($langfile))
         {
             foreach ($langfile as $value)
             {
-                $this->load($value, $idiom, $return, $add_suffix, $alt_path);
+                $this->load($value, $idiom, $return, $alt_path);
             }
 
             return;
@@ -124,7 +138,7 @@ class CI_Lang {
         $full_lang = array();
 
         // Load the base file, so any others found can override it
-        $basepath = BASEPATH.'lang/en/'.$langfile;
+        $basepath = BASEPATH.'lang/'.$this->fallback.'/'.$langfile;
         if (($found = file_exists($basepath)) === TRUE)
         {
             include($basepath);
@@ -133,7 +147,7 @@ class CI_Lang {
         // Do we have an alternative path to look in?
         if ($alt_path !== '')
         {
-            $alt_path .= 'lang/en/'.$langfile;
+            $alt_path .= 'lang/'.$this->fallback.'/'.$langfile;
             if (file_exists($alt_path))
             {
                 include($alt_path);
@@ -144,7 +158,7 @@ class CI_Lang {
         {
             foreach (get_instance()->load->get_package_paths(TRUE) as $package_path)
             {
-                $package_path .= 'lang/en/'.$langfile;
+                $package_path .= 'lang/'.$this->fallback.'/'.$langfile;
                 if ($basepath !== $package_path && file_exists($package_path))
                 {
                     include($package_path);
@@ -156,7 +170,7 @@ class CI_Lang {
 
         if ($found !== TRUE)
         {
-            show_error('Unable to load the requested language file: lang/en/'.$langfile);
+            show_error('Unable to load the requested language file: lang/'.$this->fallback.'/'.$langfile);
         }
 
         $full_lang = isset($lang) ? $lang : array();
@@ -223,15 +237,76 @@ class CI_Lang {
         return TRUE;
     }
 
+    // ------------------------------------------------------------------------
+    // !SETTER & GETTER
+    // ------------------------------------------------------------------------
+
+    // Added by Kader Bouyakoub
+
+    /**
+     * Fetches a single line of text from the language array
+     * 
+     * @param   string  $line       Language line key
+     * @param   mixed   $args       string, integer or array
+     * @param   mixed   $default    to be used in case of fail
+     * @return  string  Translation
+     *
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function get($line, $args = NULL, $default = FALSE)
+    {
+        $value = $this->arr->get($this->language, $line, $default);
+
+        // Log message error if the line is not found
+        if ($value === FALSE)
+        {
+            log_message('error', 'Cound not find the language line "'.$line.'".');
+        }
+        // If the line is found, we parse arguments
+        elseif ($args)
+        {
+            $args = (array) $args;
+
+            // Is the user trying to translate arguments?
+            foreach ($args as &$arg)
+            {
+                if (strpos($arg, 'lang:') !== FALSE)
+                {
+                    $arg = str_replace('lang:', '', $arg);
+                    $arg = $this->line($arg);
+                }
+            }
+
+            $value = vsprintf($value, $args);
+        }
+
+        return $value;
+    }
+
+    /**
+     * This method allows you to change line value
+     * @access  public
+     * @param   string  $line   the language line to change
+     * @param   string  $value  language line's new value
+     * @return  void
+     *
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function set($line, $value = NULL)
+    {
+        $this->arr->set($this->language, $line, $value);
+    }
+
 	// --------------------------------------------------------------------
 
 	// Edited by Kader Bouyakoub: 15/02/2017 @ 10:05
 
 	/**
-	 * Language line
-	 *
-	 * Fetches a single line of text from the language array
-	 *
+	 * This method is replaced by Lang::get() and kept for backward compatibility
 	 * @param	string	$line		Language line key
 	 * @param	mixed	$args		string, integer or array
 	 * @param	mixed	$default 	to be used in case of fail
@@ -239,65 +314,174 @@ class CI_Lang {
 	 */
 	public function line($line, $args = NULL, $default = FALSE)
 	{
-		$value = function_exists('dot') 
-					? dot($this->language, $line, $default) 
-					: $this->dot($this->language, $line, $default);
-
-		// Log message error if the line is not found
-		if ($value === FALSE)
-		{
-			log_message('error', 'Cound not find the language line "'.$line.'".');
-		}
-		// If the line is found, we parse arguments
-		elseif ($args)
-		{
-			$args = (array) $args;
-
-			// Is the user trying to translate arguments?
-			foreach ($args as &$arg)
-			{
-				if (strpos('lang:', $arg) !== 0)
-				{
-					$arg = str_replace('lang:', '', $arg);
-					$arg = $this->line($arg);
-				}
-			}
-
-			$value = vsprintf($value, $args);
-		}
-
-		return $value;
+        return $this->get($line, $args, $default);
 	}
 
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Access multidimensional array using dot-notation
+    /**
+     * Singular & plural form of language line
+     * 
+     * @access  public
+     * @param   string  $singular   singular form of the line
+     * @param   string  $plural     plural form of the line
+     * @param   integer $number     number used for comparison
+     * @return  string
      *
-     * @author 	Kader Bouyakoub  <bkader@mail.com>
-     * @link    @bkader          <github>
-     * @link    @KaderBouyakoub  <twitter>
-     *
-     * @param 	array 	$arr 	the array to search in
-	 * @param   string 	$path 	the path to the array's element
-	 * @param 	mixed 	$default returned if no element found
-	 * @return  mixed
-	 */
-    protected function dot(&$arr, $path = NULL, $default = NULL)
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function nline($singular, $plural, $number = 0)
     {
-        if ( ! $path) {
-            user_error("Missing array path for array", E_USER_WARNING);
-        }
-        $parts = explode(".", $path);
-        is_array($arr) or $arr = (array) $arr;
-        $path =& $arr;
-        foreach ($parts as $e) {
-            if ( ! isset($path[$e]) or empty($path[$e])) {
-                return $default;
-            }
-            $path =& $path[$e];
-        }
-        return $path;
+        $line = ($number == 1) ? $singular : $plural;
+        $value = $this->line($line, $number);
+        return sprintf($value, $number);
     }
 
+    /**
+     * This method is purely optional because you can use any method you want
+     * to fetch a language line in a particular context.
+     * By default, we use the ':' separator, so the line to get fetched would
+     * be like so: $lang['post:verb'] or $lang['post:noun']
+     *
+     * @access  public
+     * @param   string      $context    the context to use
+     * @param   string      $line       the language line to fetch
+     * @param   mixed       $args       arguments to pass parse
+     * @param   boolean     $default    value to use if no line is found
+     * @return  string      the fetched language line
+     *
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function xline($context, $line, $args = NULL, $default = FALSE)
+    {
+        return $this->line($line.':'.$context, $args, $default);
+    }
+
+    /**
+     * Returns an array of available languages codes if no parameter is passed,
+     * or an array of selected languages details.
+     *
+     * @access  public
+     * @param   mixed   string, strings, or array
+     * @return  array
+     *
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function languages()
+    {
+        $langs = $this->config->item('languages');
+
+        if ( ! empty($args = func_get_args()))
+        {
+            $args = (array) $args;
+            is_array($args[0]) && $args = $args[0];
+            $_langs = array();
+
+            foreach ($langs as $code)
+            {
+                foreach ($args as $arg)
+                {
+                    if (isset($this->_get_language($code)[$arg]))
+                    {
+                        $_langs[$code][$arg] = $this->_get_language($code)[$arg];
+                    }
+                }
+            }
+
+            $langs = $_langs;
+        }
+
+        return $langs;
+    }
+
+    /**
+     * Returns current language code if no parameter is passed.
+     * If a single parameter is passed, the array key value is returned.
+     * If multiple parameters or an array are passed, this method returns
+     * the requestes keys values only.
+     *
+     * @access  public
+     * @param   mixed   string, strings or array
+     * @return  mixed
+     *
+     * @author  Kader Bouyakoub <bkader@mail.com>
+     * @link    https://github.com/bkader
+     * @link    https://twitter.com/KaderBouyakoub
+     */
+    public function language()
+    {
+        // Prepare the language code
+        $lang = $this->config->item('language');
+
+        // If any arguments are passed
+        if ( ! empty($args = func_get_args()))
+        {
+            is_array($args[0]) && $args = $args[0];
+
+            switch (count($args)) {
+                case 1:
+                    // Ignore arguments below
+                    if (in_array($args[0], array(FALSE, NULL)))
+                    {
+                        continue;
+                    }
+                    // If TRUE is passed, the full array is returned
+                    elseif ($args[0] === TRUE)
+                    {
+                        $lang = $this->_get_language($this->config->item('language'));
+                    }
+                    // If none of the above, we continue
+                    else {
+                        goto other;
+                    }
+                    break;
+
+                default:
+                    other:
+                    $language = $this->_get_language($this->config->item('language'));
+                    $_lang = array();
+
+                    // Loop through arguments and fill $_lang array only if the key exists
+                    foreach ($args as $arg)
+                    {
+                        if (isset($language[$arg]))
+                        {
+                            $_lang[$arg] = $language[$arg];
+                        }
+                    }
+
+                    // If $_lang is not empty, we replace $lang by it.
+                    // If a single key is found, we return it as it is.
+                    if ( ! empty($_lang))
+                    {
+                        $lang = (count($_lang) == 1) ? array_pop($_lang) : $_lang;
+                    }
+                    break;
+            }
+        }
+
+        return $lang;
+    }
+
+    /**
+     * Returns an array of languages details
+     * @access  protected
+     * @param   string  $code   language's code to retrieve
+     * @return  array
+     */
+    protected function _get_language($code = 'en')
+    {
+        $lang = require BASEPATH.'vendor/languages.php';
+
+        if ($code && isset($lang[$code]))
+        {
+            $lang = $lang[$code];
+        }
+
+        return $lang;
+    }
 }

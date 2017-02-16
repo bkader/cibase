@@ -1,5 +1,5 @@
 <?php
-(defined('BASEPATH')) OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * CI_Arr - Arr.php
@@ -12,8 +12,7 @@
  * @link 	https://github.com/bkader
  */
 
-class CI_Arr
-{
+class CI_Arr {
 	/**
 	 * Gets a dot-notated key from an array, with a default value if it does
 	 * not exist.
@@ -30,13 +29,13 @@ class CI_Arr
 		{
 			throw new InvalidArgumentException('First parameter must be an array or ArrayAccess object.');
 		}
-		
+
 		// If no key is provided, we return the full array
 		if (is_NULL($key))
 		{
 			return $array;
 		}
-		
+
 		// If case $key is an array
 		if (is_array($key))
 		{
@@ -47,10 +46,10 @@ class CI_Arr
 			}
 			return $return;
 		}
-		
+
 		// If $key is an object, we turn it into a string
 		is_object($key) && $key = (string) $key;
-		
+
 		foreach (explode('.', $key) as $key_part)
 		{
 			if (($array instanceof ArrayAccess && isset($array[$key_part])) === FALSE)
@@ -220,7 +219,7 @@ class CI_Arr
 		}
 
 		$this_key = array_shift($key_parts);
-		
+
 
 		if ( ! empty($key_parts))
 		{

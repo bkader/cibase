@@ -682,6 +682,13 @@ class CI_Loader {
 		return $this;
 	}
 
+	// Alias of the method above
+	public function lang($files, $lang = '')
+	{
+		get_instance()->lang->load($files, $lang);
+		return $this;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**

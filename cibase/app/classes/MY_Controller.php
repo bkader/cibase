@@ -1,19 +1,23 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class MY_Controller extends MX_Controller
+class MY_Controller extends CI_Controller
 {
 	/**
 	 * Files to be auto-loaded
-	 * @var array
+	 *
+	 * @access 	protected
+	 * @var 	array
 	 */
-	public $autoload = array();
+	protected $autoload = array();
 	
 	/**
 	 * Module's name
-	 * @var string
+	 *
+	 * @access 	public
+	 * @var 	string
 	 */
-	protected $module = '';
+	public $module = '';
 	
 	/**
 	 * Constructor
@@ -23,6 +27,27 @@ class MY_Controller extends MX_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		$this->_autoloader();
+		// $this->_initialize();
+	}
+	
+	/**
+	 * Auto-load requested files
+	 *
+	 * @access 	protected
+	 * @param 	none
+	 * @return 	void
+	 */
+	protected function _autoloader()
+	{
+		if (empty($this->autoload)) {
+			return;
+		}
+		
+		$this->load->helper('inflector');
+		foreach ($this->autoload as $type => $file) {
+			$this->load->{singular($type)}($file);
+		}
 	}
 }
 

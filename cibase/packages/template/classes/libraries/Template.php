@@ -139,6 +139,16 @@ class Template {
 
 		// Load our template helper
 		$this->CI->load->helper('template');
+
+		// Set some need variables
+		$this->set(array(
+			'site_url'    => site_url(),
+			'base_url'    => base_url(),
+			'current_url' => current_url(),
+			'assets_url'  => $this->assets_url(),
+		), NULL, TRUE);
+
+		log_message('debug', 'Template Class Initialized');
 	}
 
 	// ------------------------------------------------------------------------
