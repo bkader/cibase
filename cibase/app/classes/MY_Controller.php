@@ -10,7 +10,7 @@ class MY_Controller extends CI_Controller
 	 * @var 	array
 	 */
 	protected $autoload = array();
-	
+
 	/**
 	 * Module's name
 	 *
@@ -18,7 +18,7 @@ class MY_Controller extends CI_Controller
 	 * @var 	string
 	 */
 	public $module = '';
-	
+
 	/**
 	 * Constructor
 	 * @param 	none
@@ -28,9 +28,11 @@ class MY_Controller extends CI_Controller
 	{
 		parent::__construct();
 		$this->_autoloader();
-		// $this->_initialize();
+
+		// Set site title
+		$this->template->set('site_name', config('app.name'), TRUE);
 	}
-	
+
 	/**
 	 * Auto-load requested files
 	 *
@@ -43,7 +45,7 @@ class MY_Controller extends CI_Controller
 		if (empty($this->autoload)) {
 			return;
 		}
-		
+
 		$this->load->helper('inflector');
 		foreach ($this->autoload as $type => $file) {
 			$this->load->{singular($type)}($file);
@@ -75,7 +77,7 @@ class Public_Controller extends MY_Controller
  * @author 	Kader Bouyakoub <bkader@mail.com>
  * @link 	https://github.com/bkader
  */
- 
+
 class Ajax_Controller extends Public_Controller
 {
 	/**
@@ -86,7 +88,7 @@ class Ajax_Controller extends Public_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// Make sure the request is always AJAX
 		if ( ! $this->input->is_ajax_request())
 		{
@@ -117,7 +119,7 @@ class User_Controller extends Public_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// Login check logic
 	}
 }
@@ -143,7 +145,7 @@ class Admin_Controller extends User_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// Access level check.
 	}
 }

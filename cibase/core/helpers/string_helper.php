@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -241,6 +205,39 @@ if ( ! function_exists('random_string'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('readable_random_string'))
+{
+    /**
+     * Generates a human readable random string
+     *
+     * @param   integer 	$length 	string's length
+     * @param   boolean 	$camelize 	whether to camelize or not
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function readable_random_string($length = 6, $camelize = FALSE)
+    {
+        $conso  = array("b","c","d","f","g","h","j","k","l","m","n","p","r","s","t","v","w","x","y","z");
+        $vocal  = array("a","e","i","o","u");
+        $string = "";
+
+        srand((double) microtime() * 1000000);
+
+        $max = $length / 2;
+        for($i = 1; $i <= $max; $i++)
+        {
+            $string .=$conso[rand(0,19)];
+            $string .=$vocal[rand(0,4)];
+        }
+        return ($camelize) ? ucwords($string) : $string;
+    }
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('increment_string'))
 {
 	/**
@@ -303,4 +300,46 @@ if ( ! function_exists('repeater'))
 	{
 		return ($num > 0) ? str_repeat($data, $num) : '';
 	}
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('mask_string'))
+{
+    /**
+     * Takes a string and mask characters leaving $start and $end
+     *
+     * @param   string 	$str 	the string to mask
+     * @param   int 	$start 	number of characters to leave at the start
+     * @param   int 	$start 	number of characters to leave at the end
+     * @param   string 	$mask 	the character to use to mask
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function mask_string($str = NULL, $start = 3, $end = 3, $mask = '*')
+    {
+        // Prepare the length of the string
+        $length = strlen($str);
+
+        // We then prepare the array that will holds all of chars
+        $chars = array();
+
+        foreach(str_split($str) as $index => $char)
+        {
+            if ($char === ' ')
+            {
+                $chars[$index] = ' ';
+            }
+            else
+            {
+                $chars[$index] = ($index <= ($start - 1) or $index >= ($length - $end))
+                                    ? $char : $mask;
+            }
+            //$chars[$index] = ($char === ' ') ? ' ' : $mask;
+        }
+        return implode('', $chars);
+    }
 }

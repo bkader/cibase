@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -134,4 +98,54 @@ if ( ! function_exists('encode_php_tags'))
 	{
 		return str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $str);
 	}
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('sanitize'))
+{
+    /**
+     * Sanitize text
+     *
+     * @param   string 	$str 	the string to sanitize
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function sanitize($str)
+    {
+    	// Load string helper if not already loaded
+    	if ( ! function_exists('strip_slashes'))
+    	{
+    		get_instance()->load->helper('string');
+    	}
+
+        return xss_clean(htmlentities(strip_slashes($str), ENT_QUOTES, 'UTF-8'));
+    }
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('generate_safe_token'))
+{
+    /**
+     * Generate Safe Token using md5 or sha1. This token is needed for
+     * validating $_GET requests
+     *
+     * @param   integer 	$time 	unix_timestamp
+     * @param 	boolean 	$sha1 	whether to use sha1 or md5
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function generate_safe_token($time = FALSE, $sha1 = FALSE)
+    {
+    	$time OR $time = time();
+    	$str = $time.config_item('encryption_key').session_id();
+    	return ($sha1 === TRUE) ? sha1($str) : md5($str);
+    }
 }

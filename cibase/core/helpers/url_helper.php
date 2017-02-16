@@ -1,40 +1,4 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -120,7 +84,8 @@ if ( ! function_exists('current_url'))
 	function current_url()
 	{
 		$CI =& get_instance();
-		return $CI->config->site_url($CI->uri->uri_string());
+        $url = $CI->config->site_url($CI->uri->uri_string());
+        return $_SERVER['QUERY_STRING'] ? $url.'?'.$_SERVER['QUERY_STRING'] : $url;
 	}
 }
 
@@ -514,18 +479,18 @@ if ( ! function_exists('url_title'))
 			'('.$q_separator.')+'	=> $separator
 		);
 
-		$str = strip_tags($str);
-		foreach ($trans as $key => $val)
-		{
-			$str = preg_replace('#'.$key.'#i'.(UTF8_ENABLED ? 'u' : ''), $val, $str);
-		}
+        $CI =& get_instance();
+        $CI->load->helper('text');
+        $str = strip_tags(convert_accented_characters($str));
+        foreach ($trans as $key => $val) {
+            $str = preg_replace('#'.$key.'#i'.(UTF8_ENABLED ? 'u' : ''), $val, $str);
+        }
 
-		if ($lowercase === TRUE)
-		{
-			$str = strtolower($str);
-		}
+        if ($lowercase === TRUE) {
+            $str = strtolower($str);
+        }
 
-		return trim(trim($str, $separator));
+        return trim(trim($str, $separator));
 	}
 }
 
@@ -583,4 +548,127 @@ if ( ! function_exists('redirect'))
 		}
 		exit;
 	}
+}
+
+// ------------------------------------------------------------------------
+
+
+if ( ! function_exists('safe_url'))
+{
+    /**
+     * Generate and safe url
+     *
+     * @param   string 	$uri
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function safe_url($uri = '', $get_var = array())
+    {
+        // Make sure the URL helper & security helper are loaded
+        function_exists('site_url') OR get_instance()->load->helper('url');
+        function_exists('generate_safe_token') OR get_instance()->load->helper('security');
+
+        $url    = site_url($uri);
+        $params = parse_url($url);
+        $query  = array_replace_recursive($get_var);
+
+        if (isset($params['query']))
+        {
+            parse_str($params['query'], $query);
+        }
+
+		$token['ts']    = time();
+		$token['token'] = generate_safe_token($token['ts']);
+		$token          = array_merge($query, array_reverse($token));
+		$query          = http_build_query($token);
+
+		$params['query'] = $query;
+
+        return build_safe_url($params);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('build_safe_url'))
+{
+    /**
+     * Build a safe URL
+     * @param   array
+     * @return  string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function build_safe_url($args)
+    {
+        $string = isset($args['scheme']) ? "{$args['scheme']}://": '';
+        $string .= isset($args['host']) ? "{$args['host']}": '';
+        $string .= isset($args['port']) ? ":{$args['port']}": '';
+        $string .= isset($args['path']) ? "{$args['path']}": '';
+        $string .= isset($args['query']) ? "?{$args['query']}": '';
+        return htmlentities($string, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('safe_anchor'))
+{
+    /**
+     * Generates a safe anchor using codeigniter
+     * built in 'anchor' function combined with
+     * our safe url builder
+     *
+     * @param   string
+     * @param   string
+     * @param   mixed
+     * @return   string
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function safe_anchor($uri = '', $title = '', $attributes = '')
+    {
+    	$uri = str_replace(site_url(), '', safe_url($uri));
+    	return anchor($uri, $title, $attributes);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+
+if ( ! function_exists('check_safe_url'))
+{
+    /**
+     * Check a safe url
+     *
+     * @param   string
+     * @return  boolean
+     *
+     * @author 	Kader Bouyakoub <bkader@mail.com>
+     * @link 	https://github.com/bkader
+     * @link 	https://twitter.com/KaderBouyakoub
+     */
+    function check_safe_url($url)
+    {
+    	function_exists('generate_safe_token') OR get_instance()->load->helper('security');
+
+        $args = parse_url($url, PHP_URL_QUERY);
+        parse_str($args);
+
+        if (empty($ts) OR empty($token))
+        {
+            return FALSE;
+        }
+
+        $_token = generate_safe_token($ts);
+
+        return ($token === $_token);
+    }
 }
