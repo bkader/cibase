@@ -12,7 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link 	https://github.com/bkader
  */
 
-class CI_Arr {
+class CI_Arr
+{
 	/**
 	 * Gets a dot-notated key from an array, with a default value if it does
 	 * not exist.
