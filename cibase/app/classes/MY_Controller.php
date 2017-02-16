@@ -1,9 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Load the MX_Controller class
-require PKGPATH.'MX/Controller.php';
-
 class MY_Controller extends MX_Controller
 {
 	/**
