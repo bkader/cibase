@@ -1,0 +1,15 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Kader Bouyakoub -- Owner -- <@KaderBouyakoub>
+
+# THANKS
+
+    CodeIgniter
+
+# TECHNOLOGY COLOPHON
+
+    PHP, HTML5, CSS3
+    Apache Server Configs, jQuery, Modernizr, Bootstrap.css
