@@ -825,14 +825,22 @@ class CI_Form_validation {
 	 *
 	 * @param	string	the field name
 	 * @return	string
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	protected function _translate_fieldname($fieldname)
 	{
 		// Do we need to translate the field name? We look for the prefix 'lang:' to determine this
 		// If we find one, but there's no translation for the string - just return it
-		if (sscanf($fieldname, 'lang:%s', $line) === 1 && FALSE === ($fieldname = $this->CI->lang->line($line, FALSE)))
+		// if (sscanf($fieldname, 'lang:%s', $line) === 1 && FALSE === ($fieldname = $this->CI->lang->line($line, FALSE)))
+		// {
+		// 	return $line;
+		// }
+
+		if (strpos($fieldname, 'lang:') !== FALSE)
 		{
-			return $line;
+			return $this->CI->lang->line(str_replace('lang:', '', $fieldname), NULL, FALSE);
 		}
 
 		return $fieldname;
@@ -847,9 +855,18 @@ class CI_Form_validation {
 	 * @param	string	A field's human name
 	 * @param	mixed	A rule's optional parameter
 	 * @return	string
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	protected function _build_error_msg($line, $field = '', $param = '')
 	{
+		// Check if the param is in a config file
+		if (is_string($param) && ($_param = config_item($param)) !== FALSE)
+		{
+			$param = $_param;
+		}
+
 		// Check for %s in the string for legacy support.
 		if (strpos($line, '%s') !== FALSE)
 		{
@@ -1087,6 +1104,26 @@ class CI_Form_validation {
 			: FALSE;
 	}
 
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Is Found
+	 *
+	 * Checks if the input value exists or not in the specified database field.
+	 *
+	 * @param 	string 	$str
+	 * @param 	string 	$field
+	 * @return 	boolean
+	 *
+	 * @author 	Kader Bouyakoub <bkader@mail.com>
+	 * @link 	https://github.com/bkader
+	 * @link 	https://twitter.com/KaderBouyakoub
+	 */
+	public function is_found($str, $field)
+	{
+		return ($this->is_unique($str, $field) === FALSE);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -1095,15 +1132,15 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	string
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function min_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-		{
-			return FALSE;
-		}
+		$val = is_numeric($val) ? $val : config_item($val);
 
-		return ($val <= mb_strlen($str));
+		return is_numeric($val) ? ($val <= mb_strlen($str)) : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -1114,15 +1151,15 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	string
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function max_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-		{
-			return FALSE;
-		}
+		$val = is_numeric($val) ? $val : config_item($val);
 
-		return ($val >= mb_strlen($str));
+		return is_numeric($val) ? ($val >= mb_strlen($str)) : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -1133,15 +1170,15 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	string
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function exact_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-		{
-			return FALSE;
-		}
+		$val = is_numeric($val) ? $val : config_item($val);
 
-		return (mb_strlen($str) === (int) $val);
+		return is_numeric($val) ? (mb_strlen($str) === (int) $val) : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -1341,9 +1378,13 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	int
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function greater_than($str, $min)
 	{
+		$min = is_numeric($min) ? $min : config_item($min);
 		return is_numeric($str) ? ($str > $min) : FALSE;
 	}
 
@@ -1355,9 +1396,13 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	int
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function greater_than_equal_to($str, $min)
 	{
+		$min = is_numeric($min) ? $min : config_item($min);
 		return is_numeric($str) ? ($str >= $min) : FALSE;
 	}
 
@@ -1369,9 +1414,13 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	int
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function less_than($str, $max)
 	{
+		$max = is_numeric($max) ? $max : config_item($max);
 		return is_numeric($str) ? ($str < $max) : FALSE;
 	}
 
@@ -1383,9 +1432,13 @@ class CI_Form_validation {
 	 * @param	string
 	 * @param	int
 	 * @return	bool
+	 *
+	 * Edited by Kader Bouyakoub
+	 * Supportes lengths stored in config
 	 */
 	public function less_than_equal_to($str, $max)
 	{
+		$max = is_numeric($max) ? $max : config_item($max);
 		return is_numeric($str) ? ($str <= $max) : FALSE;
 	}
 
@@ -1400,7 +1453,8 @@ class CI_Form_validation {
 	 */
 	public function in_list($value, $list)
 	{
-		return in_array($value, explode(',', $list), TRUE);
+		$array = array_map('trim', explode(',', $array));
+		return in_array($field, $array, TRUE);
 	}
 
 	// --------------------------------------------------------------------
