@@ -31,7 +31,7 @@ class CI_Arr {
 		}
 
 		// If no key is provided, we return the full array
-		if (is_NULL($key))
+		if (is_null($key))
 		{
 			return $array;
 		}

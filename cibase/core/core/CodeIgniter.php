@@ -38,17 +38,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
  * ------------------------------------------------------
+ *  Instantiate the hooks class
+ * ------------------------------------------------------
+ */
+	require_once BASEPATH.'classes/arr.php';
+	$ARR = new CI_Arr;
+	// $ARR =& load_class('Arr', 'core');
+
+/*
+ * ------------------------------------------------------
  *  Load the global functions
  * ------------------------------------------------------
  */
 	require_once(BASEPATH.'core/Common.php');
-
-/*
- * ------------------------------------------------------
- *  Instantiate the hooks class
- * ------------------------------------------------------
- */
-	$ARR =& load_class('Arr', 'core');
 
 /*
  * ------------------------------------------------------
@@ -258,6 +260,7 @@ if ( ! is_php('5.4'))
 	require_once(BASEPATH.'core/compat/hash.php');
 	require_once(BASEPATH.'core/compat/password.php');
 	require_once(BASEPATH.'core/compat/standard.php');
+	require_once(BASEPATH.'core/compat/strptime.php');
 
 /*
  * ------------------------------------------------------

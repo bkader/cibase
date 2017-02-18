@@ -375,8 +375,9 @@ if ( ! function_exists('config_item'))
 	 */
 	function config_item($item, $default = NULL)
 	{
+		global $ARR;
 		$config =& get_config();
-		return dot($config, $item, $default);
+		return $ARR->get($config, $item, $default);
 	}
 }
 
