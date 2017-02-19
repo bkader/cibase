@@ -16,5 +16,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['app']['name']        = 'CodeIgniter';
 $config['app']['description'] = 'CodeIgniter';
 
-/* End of file app.php */
-/* Location: ./cibase/cibase/app/config/app.php */
+$config['cdn']['enabled'] = true;
+$config['cdn']['server']  = null;

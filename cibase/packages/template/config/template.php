@@ -1,5 +1,5 @@
 <?php
-(defined('BASEPATH')) OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Template library configuration file
@@ -18,16 +18,16 @@ $config['template']['master'] = 'template';
 $config['template']['layout'] = 'default';
 
 // Title parts separator
-$config['template']['title_sep'] = '::';
+$config['template']['title_sep'] = '&#151;';
 
 // Title to be used as default
-$config['template']['title'] = 'CodeIgniter';
+$config['app']['title'] = 'CodeIgniter';
 
 // Description to be used as default
-$config['template']['description'] = 'CodeIgniter 3.1.3 Application';
+$config['app']['description'] = 'CodeIgniter 3.1.3 Application';
 
 // Keywords to be used as default
-$config['template']['keywords'] = 'codeigniter, framework';
+$config['app']['keywords'] = 'codeigniter, framework';
 
 // Whether to minify output or not
 $config['template']['compress'] = (defined('ENVIRONMENT') && ENVIRONMENT == 'production');

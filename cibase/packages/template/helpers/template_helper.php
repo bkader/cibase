@@ -1,5 +1,5 @@
 <?php
-(defined('BASEPATH')) OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Template helper
@@ -21,7 +21,7 @@ if ( ! function_exists('assets_url')) {
 	 * @param 	string 	$folder 	in case of distinct folder
 	 * @return 	string
 	 */
-	function assets_url($uri = '', $folder = NULL)
+	function assets_url($uri = '', $folder = null)
 	{
 		return get_instance()->template->assets_url($uri, $folder);
 	}
@@ -37,7 +37,7 @@ if ( ! function_exists('css_url')) {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	function css_url($file, $folder = NULL)
+	function css_url($file, $folder = null)
 	{
 		return get_instance()->template->css_url($file, $folder);
 	}
@@ -51,7 +51,7 @@ if ( ! function_exists('js_url')) {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	function js_url($file, $folder = NULL)
+	function js_url($file, $folder = null)
 	{
 		return get_instance()->template->js_url($file, $folder);
 	}
@@ -65,7 +65,7 @@ if ( ! function_exists('img_url')) {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	function img_url($file, $folder = NULL)
+	function img_url($file, $folder = null)
 	{
 		return get_instance()->template->img_url($file, $folder);
 	}
@@ -78,7 +78,7 @@ if ( ! function_exists('meta')) {
      * Display a HTML meta tag
      * @access 	public
      * @param   mixed   $name   string or associative array
-     * @param   string  $value  value or NULL if $name is array
+     * @param   string  $value  value or null if $name is array
      * @return  string
      */
 	function meta($name, $content = '')
@@ -96,7 +96,7 @@ if ( ! function_exists('css')) {
      * @param 	mixed 	$attrs 	string or array of attributes
      * @return 	string
      */
-	function css($file, $cdn = NULL, $folder = NULL)
+	function css($file, $cdn = null, $folder = null)
 	{
 		return get_instance()->template->css($file, $cdn, $folder);
 	}
@@ -111,7 +111,7 @@ if ( ! function_exists('js')) {
      * @param 	mixed 	$attrs 	string or array of attributes
      * @return 	string
      */
-	function js($file, $cdn = NULL, $folder = NULL)
+	function js($file, $cdn = null, $folder = null)
 	{
 		return get_instance()->template->js($file, $cdn, $folder);
 	}
@@ -125,7 +125,7 @@ if ( ! function_exists('img')) {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	function img($file, $folder = NULL)
+	function img($file, $folder = null)
 	{
 		return get_instance()->template->img($file, $folder);
 	}

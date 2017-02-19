@@ -85,16 +85,16 @@ if ( ! is_php('5.4'))
 		$_registered = ini_get('variables_order');
 		foreach (array('E' => '_ENV', 'G' => '_GET', 'P' => '_POST', 'C' => '_COOKIE', 'S' => '_SERVER') as $key => $superglobal)
 		{
-			if (strpos($_registered, $key) === FALSE)
+			if (strpos($_registered, $key) === false)
 			{
 				continue;
 			}
 
 			foreach (array_keys($$superglobal) as $var)
 			{
-				if (isset($GLOBALS[$var]) && ! in_array($var, $_protected, TRUE))
+				if (isset($GLOBALS[$var]) && ! in_array($var, $_protected, true))
 				{
-					$GLOBALS[$var] = NULL;
+					$GLOBALS[$var] = null;
 				}
 			}
 		}
@@ -139,11 +139,11 @@ if ( ! is_php('5.4'))
  */
 	if ($composer_autoload = config_item('composer_autoload'))
 	{
-		if ($composer_autoload === TRUE)
+		if ($composer_autoload === true)
 		{
 			file_exists(APPPATH.'vendor/autoload.php')
 				? require_once(APPPATH.'vendor/autoload.php')
-				: log_message('error', '$config[\'composer_autoload\'] is set to TRUE but '.APPPATH.'vendor/autoload.php was not found.');
+				: log_message('error', '$config[\'composer_autoload\'] is set to true but '.APPPATH.'vendor/autoload.php was not found.');
 		}
 		elseif (file_exists($composer_autoload))
 		{
@@ -218,7 +218,7 @@ if ( ! is_php('5.4'))
 
 	if (extension_loaded('mbstring'))
 	{
-		define('MB_ENABLED', TRUE);
+		define('MB_ENABLED', true);
 		// mbstring.internal_encoding is deprecated starting with PHP 5.6
 		// and it's usage triggers E_DEPRECATED messages.
 		@ini_set('mbstring.internal_encoding', $charset);
@@ -228,21 +228,21 @@ if ( ! is_php('5.4'))
 	}
 	else
 	{
-		define('MB_ENABLED', FALSE);
+		define('MB_ENABLED', false);
 	}
 
 	// There's an ICONV_IMPL constant, but the PHP manual says that using
 	// iconv's predefined constants is "strongly discouraged".
 	if (extension_loaded('iconv'))
 	{
-		define('ICONV_ENABLED', TRUE);
+		define('ICONV_ENABLED', true);
 		// iconv.internal_encoding is deprecated starting with PHP 5.6
 		// and it's usage triggers E_DEPRECATED messages.
 		@ini_set('iconv.internal_encoding', $charset);
 	}
 	else
 	{
-		define('ICONV_ENABLED', FALSE);
+		define('ICONV_ENABLED', false);
 	}
 
 	if (is_php('5.6'))
@@ -281,7 +281,7 @@ if ( ! is_php('5.4'))
  *  Instantiate the routing class and set the routing
  * ------------------------------------------------------
  */
-	$RTR =& load_class('Router', 'core', isset($routing) ? $routing : NULL);
+	$RTR =& load_class('Router', 'core', isset($routing) ? $routing : null);
 
 /*
  * ------------------------------------------------------
@@ -295,7 +295,7 @@ if ( ! is_php('5.4'))
  *	Is there a valid cache file? If so, we're done...
  * ------------------------------------------------------
  */
-	if ($EXT->call_hook('cache_override') === FALSE && $OUT->_display_cache($CFG, $URI) === TRUE)
+	if ($EXT->call_hook('cache_override') === false && $OUT->_display_cache($CFG, $URI) === true)
 	{
 		exit;
 	}
@@ -371,7 +371,7 @@ if ( ! is_php('5.4'))
  *  controller methods that begin with an underscore.
  */
 
-	$e404 = FALSE;
+	$e404 = false;
 	$module = $RTR->module;
 	$class = ucfirst($RTR->class);
 	$method = $RTR->method;
@@ -388,9 +388,9 @@ if ( ! is_php('5.4'))
 			{
 				require_once $file;
 
-				if ( ! class_exists($class, FALSE) OR $method[0] === '_' OR method_exists('CI_Controller', $method))
+				if ( ! class_exists($class, false) OR $method[0] === '_' OR method_exists('CI_Controller', $method))
 				{
-					$e404 = TRUE;
+					$e404 = true;
 				}
 				elseif (method_exists($class, '_remap'))
 				{
@@ -399,14 +399,14 @@ if ( ! is_php('5.4'))
 				}
 				elseif ( ! method_exists($class, $method))
 				{
-					$e404 = TRUE;
+					$e404 = true;
 				}
 				elseif ( ! is_callable(array($class, $method)) && strcasecmp($class, $method) === 0)
 				{
 					$reflection = new ReflectionMethod($class, $method);
 					if ( ! $reflection->isPublic() OR $reflection->isConstructor())
 					{
-						$e404 = TRUE;
+						$e404 = true;
 					}
 				}
 				break;
@@ -417,16 +417,16 @@ if ( ! is_php('5.4'))
 	// If not a module & the controller does not exists, we trigger 404
 	elseif (empty($class) OR ! file_exists(APPPATH.'classes/controllers/'.$RTR->directory.$class.'.php'))
 	{
-		$e404 = TRUE;
+		$e404 = true;
 	}
 	// If the controller is found, we continue
 	else
 	{
 		require_once(APPPATH.'classes/controllers/'.$RTR->directory.$class.'.php');
 
-		if ( ! class_exists($class, FALSE) OR $method[0] === '_' OR method_exists('CI_Controller', $method))
+		if ( ! class_exists($class, false) OR $method[0] === '_' OR method_exists('CI_Controller', $method))
 		{
-			$e404 = TRUE;
+			$e404 = true;
 		}
 		elseif (method_exists($class, '_remap'))
 		{
@@ -435,7 +435,7 @@ if ( ! is_php('5.4'))
 		}
 		elseif ( ! method_exists($class, $method))
 		{
-			$e404 = TRUE;
+			$e404 = true;
 		}
 		/**
 		 * DO NOT CHANGE THIS, NOTHING ELSE WORKS!
@@ -453,7 +453,7 @@ if ( ! is_php('5.4'))
 			$reflection = new ReflectionMethod($class, $method);
 			if ( ! $reflection->isPublic() OR $reflection->isConstructor())
 			{
-				$e404 = TRUE;
+				$e404 = true;
 			}
 		}
 	}
@@ -469,18 +469,18 @@ if ( ! is_php('5.4'))
 
 			$error_class = ucfirst($error_class);
 
-			if ( ! class_exists($error_class, FALSE))
+			if ( ! class_exists($error_class, false))
 			{
 				if (file_exists(APPPATH.'classes/controllers/'.$RTR->directory.$error_class.'.php'))
 				{
 					require_once(APPPATH.'classes/controllers/'.$RTR->directory.$error_class.'.php');
-					$e404 = ! class_exists($error_class, FALSE);
+					$e404 = ! class_exists($error_class, false);
 				}
 				// Were we in a directory? If so, check for a global override
 				elseif ( ! empty($RTR->directory) && file_exists(APPPATH.'classes/controllers/'.$error_class.'.php'))
 				{
 					require_once(APPPATH.'classes/controllers/'.$error_class.'.php');
-					if (($e404 = ! class_exists($error_class, FALSE)) === FALSE)
+					if (($e404 = ! class_exists($error_class, false)) === false)
 					{
 						$RTR->directory = '';
 					}
@@ -488,7 +488,7 @@ if ( ! is_php('5.4'))
 			}
 			else
 			{
-				$e404 = FALSE;
+				$e404 = false;
 			}
 		}
 
@@ -560,7 +560,7 @@ if ( ! is_php('5.4'))
  *  Send the final rendered output to the browser
  * ------------------------------------------------------
  */
-	if ($EXT->call_hook('display_override') === FALSE)
+	if ($EXT->call_hook('display_override') === false)
 	{
 		$OUT->_display();
 	}

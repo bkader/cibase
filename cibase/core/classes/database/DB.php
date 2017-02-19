@@ -1,40 +1,5 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -48,10 +13,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @param 	bool		$query_builder_override
  *				Determines if query builder should be used or not
  */
-function &DB($params = '', $query_builder_override = NULL)
+function &DB($params = '', $query_builder_override = null)
 {
 	// Load the DB config file if a DSN string wasn't passed
-	if (is_string($params) && strpos($params, '://') === FALSE)
+	if (is_string($params) && strpos($params, '://') === false)
 	{
 		// Is the config file in the environment folder?
 		if ( ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php')
@@ -64,7 +29,7 @@ function &DB($params = '', $query_builder_override = NULL)
 
 		// Make packages contain database config files,
 		// given that the controller instance already exists
-		if (class_exists('CI_Controller', FALSE))
+		if (class_exists('CI_Controller', false))
 		{
 			foreach (get_instance()->load->get_package_paths() as $path)
 			{
@@ -112,7 +77,7 @@ function &DB($params = '', $query_builder_override = NULL)
 		 * parameter. DSNs must have this prototype:
 		 * $dsn = 'driver://username:password@hostname/database';
 		 */
-		if (($dsn = @parse_url($params)) === FALSE)
+		if (($dsn = @parse_url($params)) === false)
 		{
 			show_error('Invalid DB Connection String');
 		}
@@ -133,9 +98,9 @@ function &DB($params = '', $query_builder_override = NULL)
 
 			foreach ($extra as $key => $val)
 			{
-				if (is_string($val) && in_array(strtoupper($val), array('TRUE', 'FALSE', 'NULL')))
+				if (is_string($val) && in_array(strtoupper($val), array('true', 'false', 'null')))
 				{
-					$val = var_export($val, TRUE);
+					$val = var_export($val, true);
 				}
 
 				$params[$key] = $val;
@@ -152,7 +117,7 @@ function &DB($params = '', $query_builder_override = NULL)
 	// Load the DB classes. Note: Since the query builder class is optional
 	// we need to dynamically create a class that extends proper parent class
 	// based on whether we're using the query builder class or not.
-	if ($query_builder_override !== NULL)
+	if ($query_builder_override !== null)
 	{
 		$query_builder = $query_builder_override;
 	}
@@ -166,10 +131,10 @@ function &DB($params = '', $query_builder_override = NULL)
 
 	require_once(BASEPATH.'classes/database/DB_driver.php');
 
-	if ( ! isset($query_builder) OR $query_builder === TRUE)
+	if ( ! isset($query_builder) OR $query_builder === true)
 	{
 		require_once(BASEPATH.'classes/database/DB_query_builder.php');
-		if ( ! class_exists('CI_DB', FALSE))
+		if ( ! class_exists('CI_DB', false))
 		{
 			/**
 			 * CI_DB
@@ -182,7 +147,7 @@ function &DB($params = '', $query_builder_override = NULL)
 			class CI_DB extends CI_DB_query_builder { }
 		}
 	}
-	elseif ( ! class_exists('CI_DB', FALSE))
+	elseif ( ! class_exists('CI_DB', false))
 	{
 		/**
 	 	 * @ignore

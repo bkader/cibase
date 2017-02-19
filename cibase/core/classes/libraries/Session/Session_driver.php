@@ -26,7 +26,7 @@ abstract class CI_Session_driver implements SessionHandlerInterface {
 	 *
 	 * @var	mixed
 	 */
-	protected $_lock = FALSE;
+	protected $_lock = false;
 
 	/**
 	 * Read session ID
@@ -64,8 +64,8 @@ abstract class CI_Session_driver implements SessionHandlerInterface {
 
 		if (is_php('7'))
 		{
-			$this->_success = TRUE;
-			$this->_failure = FALSE;
+			$this->_success = true;
+			$this->_failure = false;
 		}
 		else
 		{
@@ -88,12 +88,12 @@ abstract class CI_Session_driver implements SessionHandlerInterface {
 	{
 		return setcookie(
 			$this->_config['cookie_name'],
-			NULL,
+			null,
 			1,
 			$this->_config['cookie_path'],
 			$this->_config['cookie_domain'],
 			$this->_config['cookie_secure'],
-			TRUE
+			true
 		);
 	}
 
@@ -111,8 +111,8 @@ abstract class CI_Session_driver implements SessionHandlerInterface {
 	 */
 	protected function _get_lock($session_id)
 	{
-		$this->_lock = TRUE;
-		return TRUE;
+		$this->_lock = true;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -126,10 +126,10 @@ abstract class CI_Session_driver implements SessionHandlerInterface {
 	{
 		if ($this->_lock)
 		{
-			$this->_lock = FALSE;
+			$this->_lock = false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------

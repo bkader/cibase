@@ -37,7 +37,7 @@ class Example_lib
 	 * @param 	boolean 	$camelize
 	 * @return 	string
 	 */
-	public function random_string($length = 6, $camelize = FALSE)
+	public function random_string($length = 6, $camelize = false)
 	{
 		$this->CI->load->helper('string');
 		return readable_random_string($length, $camelize);
@@ -50,6 +50,6 @@ class Example_lib
 	 */
 	public function random_password($length = 8)
 	{
-		return $this->random_string($length, FALSE);
+		return $this->random_string($length, false);
 	}
 }

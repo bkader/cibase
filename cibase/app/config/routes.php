@@ -38,12 +38,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | This route will tell the Router which controller/method to use if those
 | provided in the URL cannot be matched to a valid route.
 |
-|	$route['translate_uri_dashes'] = FALSE;
+|	$route['translate_uri_dashes'] = false;
 |
 | This is not exactly a route, but allows you to automatically route
 | controller and method names that contain dashes. '-' isn't a valid
 | class or method name character, so it requires translation.
-| When you set this option to TRUE, it will replace ALL dashes in the
+| When you set this option to true, it will replace ALL dashes in the
 | controller and method URI segments.
 |
 | Examples:	my-controller/index	-> my_controller/index
@@ -51,4 +51,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
+$route['translate_uri_dashes'] = false;
+
+/**
+ * ============================================
+ * Authentication module
+ * ============================================
+ */
+
+// Register
+Route::any('register', 'auth/register', array('as' => 'register'));
+Route::prefix('register', function() {
+	Route::any('(resend|activate)', 'auth/$1');
+	Route::any('activate/([A-Za-z0-9_-]+)', 'auth/activate/$1');
+});
+
+// Login
+Route::any('login', 'auth/login', array('as' => 'login'));
+Route::prefix('login', function() {
+	Route::any('(recover|reset)', 'auth/$1');
+	Route::any('reset/([A-Za-z0-9_-]+)', 'auth/reset/$1');
+});
+Route::any('logout', 'auth/logout/index', array('as' => 'logout'));
+
+Route::block('auth/(:any)');
+
+// Always keeps this line at the end
+$route = Route::map($route);

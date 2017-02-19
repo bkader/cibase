@@ -19,7 +19,7 @@ class CI_Unit_test {
 	 *
 	 * @var	bool
 	 */
-	public $active = TRUE;
+	public $active = true;
 
 	/**
 	 * Test results
@@ -35,21 +35,21 @@ class CI_Unit_test {
 	 *
 	 * @var	bool
 	 */
-	public $strict = FALSE;
+	public $strict = false;
 
 	/**
 	 * Template
 	 *
 	 * @var	string
 	 */
-	protected $_template = NULL;
+	protected $_template = null;
 
 	/**
 	 * Template rows
 	 *
 	 * @var	string
 	 */
-	protected $_template_rows = NULL;
+	protected $_template_rows = null;
 
 	/**
 	 * List of visible test items
@@ -109,21 +109,21 @@ class CI_Unit_test {
 	 * @param	string	$notes
 	 * @return	string
 	 */
-	public function run($test, $expected = TRUE, $test_name = 'undefined', $notes = '')
+	public function run($test, $expected = true, $test_name = 'undefined', $notes = '')
 	{
-		if ($this->active === FALSE)
+		if ($this->active === false)
 		{
-			return FALSE;
+			return false;
 		}
 
-		if (in_array($expected, array('is_object', 'is_string', 'is_bool', 'is_true', 'is_false', 'is_int', 'is_numeric', 'is_float', 'is_double', 'is_array', 'is_null', 'is_resource'), TRUE))
+		if (in_array($expected, array('is_object', 'is_string', 'is_bool', 'is_true', 'is_false', 'is_int', 'is_numeric', 'is_float', 'is_double', 'is_array', 'is_null', 'is_resource'), true))
 		{
 			$result = $expected($test);
 			$extype = str_replace(array('true', 'false'), 'bool', str_replace('is_', '', $expected));
 		}
 		else
 		{
-			$result = ($this->strict === TRUE) ? ($test === $expected) : ($test == $expected);
+			$result = ($this->strict === true) ? ($test === $expected) : ($test == $expected);
 			$extype = gettype($expected);
 		}
 
@@ -133,7 +133,7 @@ class CI_Unit_test {
 			'test_name'     => $test_name,
 			'test_datatype' => gettype($test),
 			'res_datatype'  => $extype,
-			'result'        => ($result === TRUE) ? 'passed' : 'failed',
+			'result'        => ($result === true) ? 'passed' : 'failed',
 			'file'          => $back['file'],
 			'line'          => $back['line'],
 			'notes'         => $notes
@@ -204,7 +204,7 @@ class CI_Unit_test {
 	 * @param	bool	$state
 	 * @return	void
 	 */
-	public function use_strict($state = TRUE)
+	public function use_strict($state = true)
 	{
 		$this->strict = (bool) $state;
 	}
@@ -219,7 +219,7 @@ class CI_Unit_test {
 	 * @param	bool
 	 * @return	void
 	 */
-	public function active($state = TRUE)
+	public function active($state = true)
 	{
 		$this->active = (bool) $state;
 	}
@@ -254,15 +254,15 @@ class CI_Unit_test {
 				{
 					continue;
 				}
-				elseif (in_array($key, array('test_name', 'test_datatype', 'res_datatype', 'result'), TRUE))
+				elseif (in_array($key, array('test_name', 'test_datatype', 'res_datatype', 'result'), true))
 				{
-					if (FALSE !== ($line = $CI->lang->line(strtolower('ut_'.$val), FALSE)))
+					if (false !== ($line = $CI->lang->line(strtolower('ut_'.$val), false)))
 					{
 						$val = $line;
 					}
 				}
 
-				$temp[$CI->lang->line('ut_'.$key, FALSE)] = $val;
+				$temp[$CI->lang->line('ut_'.$key, false)] = $val;
 			}
 
 			$retval[] = $temp;
@@ -330,12 +330,12 @@ class CI_Unit_test {
 	 */
 	protected function _parse_template()
 	{
-		if ($this->_template_rows !== NULL)
+		if ($this->_template_rows !== null)
 		{
 			return;
 		}
 
-		if ($this->_template === NULL OR ! preg_match('/\{rows\}(.*?)\{\/rows\}/si', $this->_template, $match))
+		if ($this->_template === null OR ! preg_match('/\{rows\}(.*?)\{\/rows\}/si', $this->_template, $match))
 		{
 			$this->_default_template();
 			return;
@@ -348,23 +348,23 @@ class CI_Unit_test {
 }
 
 /**
- * Helper function to test boolean TRUE
+ * Helper function to test boolean true
  *
  * @param	mixed	$test
  * @return	bool
  */
 function is_true($test)
 {
-	return ($test === TRUE);
+	return ($test === true);
 }
 
 /**
- * Helper function to test boolean FALSE
+ * Helper function to test boolean false
  *
  * @param	mixed	$test
  * @return	bool
  */
 function is_false($test)
 {
-	return ($test === FALSE);
+	return ($test === false);
 }

@@ -48,7 +48,7 @@ class CI_DB_pdo_sqlsrv_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _alter_table($alter_type, $table, $field)
 	{
-		if (in_array($alter_type, array('ADD', 'DROP'), TRUE))
+		if (in_array($alter_type, array('ADD', 'DROP'), true))
 		{
 			return parent::_alter_table($alter_type, $table, $field);
 		}
@@ -75,7 +75,7 @@ class CI_DB_pdo_sqlsrv_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _attr_type(&$attributes)
 	{
-		if (isset($attributes['CONSTRAINT']) && strpos($attributes['TYPE'], 'INT') !== FALSE)
+		if (isset($attributes['CONSTRAINT']) && strpos($attributes['TYPE'], 'INT') !== false)
 		{
 			unset($attributes['CONSTRAINT']);
 		}
@@ -84,7 +84,7 @@ class CI_DB_pdo_sqlsrv_forge extends CI_DB_pdo_forge {
 		{
 			case 'MEDIUMINT':
 				$attributes['TYPE'] = 'INTEGER';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			case 'INTEGER':
 				$attributes['TYPE'] = 'INT';
@@ -104,7 +104,7 @@ class CI_DB_pdo_sqlsrv_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _attr_auto_increment(&$attributes, &$field)
 	{
-		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === TRUE && stripos($field['type'], 'int') !== FALSE)
+		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === true && stripos($field['type'], 'int') !== false)
 		{
 			$field['auto_increment'] = ' IDENTITY(1,1)';
 		}

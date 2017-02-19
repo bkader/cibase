@@ -59,9 +59,9 @@ class CI_Parser {
 	 * @param	bool
 	 * @return	string
 	 */
-	public function parse($template, $data, $return = FALSE)
+	public function parse($template, $data, $return = false)
 	{
-		$template = $this->CI->load->view($template, $data, TRUE);
+		$template = $this->CI->load->view($template, $data, true);
 
 		return $this->_parse($template, $data, $return);
 	}
@@ -79,7 +79,7 @@ class CI_Parser {
 	 * @param	bool
 	 * @return	string
 	 */
-	public function parse_string($template, $data, $return = FALSE)
+	public function parse_string($template, $data, $return = false)
 	{
 		return $this->_parse($template, $data, $return);
 	}
@@ -97,11 +97,11 @@ class CI_Parser {
 	 * @param	bool
 	 * @return	string
 	 */
-	protected function _parse($template, $data, $return = FALSE)
+	protected function _parse($template, $data, $return = false)
 	{
 		if ($template === '')
 		{
-			return FALSE;
+			return false;
 		}
 
 		$replace = array();
@@ -118,7 +118,7 @@ class CI_Parser {
 		unset($data);
 		$template = strtr($template, $replace);
 
-		if ($return === FALSE)
+		if ($return === false)
 		{
 			$this->CI->output->append_output($template);
 		}

@@ -38,21 +38,21 @@ class CI_Jquery extends CI_Javascript {
 	 *
 	 * @var	bool
 	 */
-	public $jquery_corner_active = FALSE;
+	public $jquery_corner_active = false;
 
 	/**
 	 * JQuery table sorter active flag
 	 *
 	 * @var	bool
 	 */
-	public $jquery_table_sorter_active = FALSE;
+	public $jquery_table_sorter_active = false;
 
 	/**
 	 * JQuery table sorter pager active
 	 *
 	 * @var	bool
 	 */
-	public $jquery_table_sorter_pager_active = FALSE;
+	public $jquery_table_sorter_pager_active = false;
 
 	/**
 	 * JQuery AJAX image
@@ -74,7 +74,7 @@ class CI_Jquery extends CI_Javascript {
 		$this->CI =& get_instance();
 		extract($params);
 
-		if ($autoload === TRUE)
+		if ($autoload === true)
 		{
 			$this->script();
 		}
@@ -128,7 +128,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	whether or not to return false
 	 * @return	string
 	 */
-	protected function _click($element = 'this', $js = '', $ret_false = TRUE)
+	protected function _click($element = 'this', $js = '', $ret_false = true)
 	{
 		is_array($js) OR $js = array($js);
 
@@ -693,7 +693,7 @@ class CI_Jquery extends CI_Javascript {
 	protected function _updater($container = 'this', $controller = '', $options = '')
 	{
 		$container = $this->_prep_element($container);
-		$controller = (strpos('://', $controller) === FALSE) ? $controller : $this->CI->config->site_url($controller);
+		$controller = (strpos('://', $controller) === false) ? $controller : $this->CI->config->site_url($controller);
 
 		// ajaxStart and ajaxStop are better choices here... but this is a stop gap
 		if ($this->CI->config->item('javascript_ajax_img') === '')
@@ -782,7 +782,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$relative
 	 * @return	void
 	 */
-	public function modal($src, $relative = FALSE)
+	public function modal($src, $relative = false)
 	{
 		$this->jquery_code_for_load[] = $this->external($src, $relative);
 	}
@@ -798,7 +798,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$relative
 	 * @return	void
 	 */
-	public function effect($src, $relative = FALSE)
+	public function effect($src, $relative = false)
 	{
 		$this->jquery_code_for_load[] = $this->external($src, $relative);
 	}
@@ -814,7 +814,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$relative
 	 * @return	void
 	 */
-	public function plugin($src, $relative = FALSE)
+	public function plugin($src, $relative = false)
 	{
 		$this->jquery_code_for_load[] = $this->external($src, $relative);
 	}
@@ -830,7 +830,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$relative
 	 * @return	void
 	 */
-	public function ui($src, $relative = FALSE)
+	public function ui($src, $relative = false)
 	{
 		$this->jquery_code_for_load[] = $this->external($src, $relative);
 	}
@@ -917,7 +917,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$script_tags
 	 * @return	void
 	 */
-	protected function _compile($view_var = 'script_foot', $script_tags = TRUE)
+	protected function _compile($view_var = 'script_foot', $script_tags = true)
 	{
 		// External references
 		$external_scripts = implode('', $this->jquery_code_for_load);
@@ -934,7 +934,7 @@ class CI_Jquery extends CI_Javascript {
 			.implode('', $this->jquery_code_for_compile)
 			.'});';
 
-		$output = ($script_tags === FALSE) ? $script : $this->inline($script);
+		$output = ($script_tags === false) ? $script : $this->inline($script);
 
 		$this->CI->load->vars(array($view_var => $output));
 	}
@@ -984,7 +984,7 @@ class CI_Jquery extends CI_Javascript {
 	 * @param	bool	$relative
 	 * @return	string
 	 */
-	public function script($library_src = '', $relative = FALSE)
+	public function script($library_src = '', $relative = false)
 	{
 		$library_src = $this->external($library_src, $relative);
 		$this->jquery_code_for_load[] = $library_src;

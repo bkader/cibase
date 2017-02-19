@@ -1,40 +1,5 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -60,21 +25,21 @@ abstract class CI_DB_utility {
 	 *
 	 * @var	string
 	 */
-	protected $_list_databases		= FALSE;
+	protected $_list_databases		= false;
 
 	/**
 	 * OPTIMIZE TABLE statement
 	 *
 	 * @var	string
 	 */
-	protected $_optimize_table	= FALSE;
+	protected $_optimize_table	= false;
 
 	/**
 	 * REPAIR TABLE statement
 	 *
 	 * @var	string
 	 */
-	protected $_repair_table	= FALSE;
+	protected $_repair_table	= false;
 
 	// --------------------------------------------------------------------
 
@@ -104,15 +69,15 @@ abstract class CI_DB_utility {
 		{
 			return $this->db->data_cache['db_names'];
 		}
-		elseif ($this->_list_databases === FALSE)
+		elseif ($this->_list_databases === false)
 		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$this->db->data_cache['db_names'] = array();
 
 		$query = $this->db->query($this->_list_databases);
-		if ($query === FALSE)
+		if ($query === false)
 		{
 			return $this->db->data_cache['db_names'];
 		}
@@ -148,19 +113,19 @@ abstract class CI_DB_utility {
 	 */
 	public function optimize_table($table_name)
 	{
-		if ($this->_optimize_table === FALSE)
+		if ($this->_optimize_table === false)
 		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$query = $this->db->query(sprintf($this->_optimize_table, $this->db->escape_identifiers($table_name)));
-		if ($query !== FALSE)
+		if ($query !== false)
 		{
 			$query = $query->result_array();
 			return current($query);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -172,9 +137,9 @@ abstract class CI_DB_utility {
 	 */
 	public function optimize_database()
 	{
-		if ($this->_optimize_table === FALSE)
+		if ($this->_optimize_table === false)
 		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$result = array();
@@ -209,9 +174,9 @@ abstract class CI_DB_utility {
 	 */
 	public function repair_table($table_name)
 	{
-		if ($this->_repair_table === FALSE)
+		if ($this->_repair_table === false)
 		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$query = $this->db->query(sprintf($this->_repair_table, $this->db->escape_identifiers($table_name)));
@@ -335,10 +300,10 @@ abstract class CI_DB_utility {
 			'ignore'		=> array(),
 			'filename'		=> '',
 			'format'		=> 'gzip', // gzip, zip, txt
-			'add_drop'		=> TRUE,
-			'add_insert'		=> TRUE,
+			'add_drop'		=> true,
+			'add_insert'		=> true,
 			'newline'		=> "\n",
-			'foreign_key_checks'	=> TRUE
+			'foreign_key_checks'	=> true
 		);
 
 		// Did the user submit any preferences? If so set them....
@@ -361,7 +326,7 @@ abstract class CI_DB_utility {
 		}
 
 		// Validate the format
-		if ( ! in_array($prefs['format'], array('gzip', 'zip', 'txt'), TRUE))
+		if ( ! in_array($prefs['format'], array('gzip', 'zip', 'txt'), true))
 		{
 			$prefs['format'] = 'txt';
 		}

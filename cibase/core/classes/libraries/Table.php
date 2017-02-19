@@ -33,21 +33,21 @@ class CI_Table {
 	 *
 	 * @var bool
 	 */
-	public $auto_heading	= TRUE;
+	public $auto_heading	= true;
 
 	/**
 	 * Table caption
 	 *
 	 * @var string
 	 */
-	public $caption		= NULL;
+	public $caption		= null;
 
 	/**
 	 * Table layout template
 	 *
 	 * @var array
 	 */
-	public $template	= NULL;
+	public $template	= null;
 
 	/**
 	 * Newline setting
@@ -68,7 +68,7 @@ class CI_Table {
 	 *
 	 * @var function
 	 */
-	public $function	= NULL;
+	public $function	= null;
 
 	/**
 	 * Set the template from the table config file if it exists
@@ -99,11 +99,11 @@ class CI_Table {
 	{
 		if ( ! is_array($template))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$this->template = $template;
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -138,12 +138,12 @@ class CI_Table {
 	{
 		if ( ! is_array($array) OR count($array) === 0 OR ! is_int($col_limit))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Turn off the auto-heading feature since it's doubtful we
 		// will want headings from a one-dimensional array
-		$this->auto_heading = FALSE;
+		$this->auto_heading = false;
 
 		if ($col_limit === 0)
 		{
@@ -252,7 +252,7 @@ class CI_Table {
 	 * @param	mixed	$table_data
 	 * @return	string
 	 */
-	public function generate($table_data = NULL)
+	public function generate($table_data = null)
 	{
 		// The table data can optionally be passed to this function
 		// either as a database result object or an array
@@ -280,7 +280,7 @@ class CI_Table {
 		// Validate a possibly existing custom cell manipulation function
 		if (isset($this->function) && ! is_callable($this->function))
 		{
-			$this->function = NULL;
+			$this->function = null;
 		}
 
 		// Build the table!
@@ -349,7 +349,7 @@ class CI_Table {
 					$cell = isset($cell['data']) ? $cell['data'] : '';
 					$out .= $temp;
 
-					if ($cell === '' OR $cell === NULL)
+					if ($cell === '' OR $cell === null)
 					{
 						$out .= $this->empty_cells;
 					}
@@ -390,7 +390,7 @@ class CI_Table {
 	{
 		$this->rows = array();
 		$this->heading = array();
-		$this->auto_heading = TRUE;
+		$this->auto_heading = true;
 		return $this;
 	}
 
@@ -405,7 +405,7 @@ class CI_Table {
 	protected function _set_from_db_result($object)
 	{
 		// First generate the headings from the table column names
-		if ($this->auto_heading === TRUE && empty($this->heading))
+		if ($this->auto_heading === true && empty($this->heading))
 		{
 			$this->heading = $this->_prep_args($object->list_fields());
 		}
@@ -426,7 +426,7 @@ class CI_Table {
 	 */
 	protected function _set_from_array($data)
 	{
-		if ($this->auto_heading === TRUE && empty($this->heading))
+		if ($this->auto_heading === true && empty($this->heading))
 		{
 			$this->heading = $this->_prep_args(array_shift($data));
 		}
@@ -446,7 +446,7 @@ class CI_Table {
 	 */
 	protected function _compile_template()
 	{
-		if ($this->template === NULL)
+		if ($this->template === null)
 		{
 			$this->template = $this->_default_template();
 			return;

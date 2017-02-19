@@ -18,7 +18,7 @@ if ( ! function_exists('hash_example'))
 		// Return null if no string is provided
 		if (is_null($string))
 		{
-			return NULL;
+			return null;
 		}
 
 		// This function gets called first because CI comes with it.

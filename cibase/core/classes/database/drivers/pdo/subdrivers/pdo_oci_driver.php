@@ -85,7 +85,7 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 
 			empty($this->char_set) OR $this->dsn .= ';charset='.$this->char_set;
 		}
-		elseif ( ! empty($this->char_set) && strpos($this->dsn, 'charset=', 4) === FALSE)
+		elseif ( ! empty($this->char_set) && strpos($this->dsn, 'charset=', 4) === false)
 		{
 			$this->dsn .= ';charset='.$this->char_set;
 		}
@@ -111,7 +111,7 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 			return $this->data_cache['version'] = $match[1];
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -124,11 +124,11 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 	 * @param	bool	$prefix_limit
 	 * @return	string
 	 */
-	protected function _list_tables($prefix_limit = FALSE)
+	protected function _list_tables($prefix_limit = false)
 	{
 		$sql = 'SELECT "TABLE_NAME" FROM "ALL_TABLES"';
 
-		if ($prefix_limit === TRUE && $this->dbprefix !== '')
+		if ($prefix_limit === true && $this->dbprefix !== '')
 		{
 			return $sql.' WHERE "TABLE_NAME" LIKE \''.$this->escape_like_str($this->dbprefix)."%' "
 				.sprintf($this->_like_escape_str, $this->_like_escape_chr);
@@ -149,7 +149,7 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _list_columns($table = '')
 	{
-		if (strpos($table, '.') !== FALSE)
+		if (strpos($table, '.') !== false)
 		{
 			sscanf($table, '%[^.].%s', $owner, $table);
 		}
@@ -173,7 +173,7 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 	 */
 	public function field_data($table)
 	{
-		if (strpos($table, '.') !== FALSE)
+		if (strpos($table, '.') !== false)
 		{
 			sscanf($table, '%[^.].%s', $owner, $table);
 		}
@@ -182,14 +182,14 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 			$owner = $this->username;
 		}
 
-		$sql = 'SELECT COLUMN_NAME, DATA_TYPE, CHAR_LENGTH, DATA_PRECISION, DATA_LENGTH, DATA_DEFAULT, NULLABLE
+		$sql = 'SELECT COLUMN_NAME, DATA_TYPE, CHAR_LENGTH, DATA_PRECISION, DATA_LENGTH, DATA_DEFAULT, nullABLE
 			FROM ALL_TAB_COLUMNS
 			WHERE UPPER(OWNER) = '.$this->escape(strtoupper($owner)).'
 				AND UPPER(TABLE_NAME) = '.$this->escape(strtoupper($table));
 
-		if (($query = $this->query($sql)) === FALSE)
+		if (($query = $this->query($sql)) === false)
 		{
-			return FALSE;
+			return false;
 		}
 		$query = $query->result_object();
 
@@ -202,14 +202,14 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 
 			$length = ($query[$i]->CHAR_LENGTH > 0)
 				? $query[$i]->CHAR_LENGTH : $query[$i]->DATA_PRECISION;
-			if ($length === NULL)
+			if ($length === null)
 			{
 				$length = $query[$i]->DATA_LENGTH;
 			}
 			$retval[$i]->max_length		= $length;
 
 			$default = $query[$i]->DATA_DEFAULT;
-			if ($default === NULL && $query[$i]->NULLABLE === 'N')
+			if ($default === null && $query[$i]->nullABLE === 'N')
 			{
 				$default = '';
 			}
@@ -256,8 +256,8 @@ class CI_DB_pdo_oci_driver extends CI_DB_pdo_driver {
 	{
 		if ($this->qb_limit)
 		{
-			$this->where('rownum <= ',$this->qb_limit, FALSE);
-			$this->qb_limit = FALSE;
+			$this->where('rownum <= ',$this->qb_limit, false);
+			$this->qb_limit = false;
 		}
 
 		return parent::_delete($table);

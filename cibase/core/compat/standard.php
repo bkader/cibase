@@ -31,9 +31,9 @@ if ( ! function_exists('array_column'))
 	 * @param	mixed	$index_key
 	 * @return	array
 	 */
-	function array_column(array $array, $column_key, $index_key = NULL)
+	function array_column(array $array, $column_key, $index_key = null)
 	{
-		if ( ! in_array($type = gettype($column_key), array('integer', 'string', 'NULL'), TRUE))
+		if ( ! in_array($type = gettype($column_key), array('integer', 'string', 'null'), true))
 		{
 			if ($type === 'double')
 			{
@@ -46,11 +46,11 @@ if ( ! function_exists('array_column'))
 			else
 			{
 				trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
-				return FALSE;
+				return false;
 			}
 		}
 
-		if ( ! in_array($type = gettype($index_key), array('integer', 'string', 'NULL'), TRUE))
+		if ( ! in_array($type = gettype($index_key), array('integer', 'string', 'null'), true))
 		{
 			if ($type === 'double')
 			{
@@ -63,14 +63,14 @@ if ( ! function_exists('array_column'))
 			else
 			{
 				trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
-				return FALSE;
+				return false;
 			}
 		}
 
 		$result = array();
 		foreach ($array as &$a)
 		{
-			if ($column_key === NULL)
+			if ($column_key === null)
 			{
 				$value = $a;
 			}
@@ -83,7 +83,7 @@ if ( ! function_exists('array_column'))
 				continue;
 			}
 
-			if ($index_key === NULL OR ! array_key_exists($index_key, $a))
+			if ($index_key === null OR ! array_key_exists($index_key, $a))
 			{
 				$result[] = $value;
 			}
@@ -117,7 +117,7 @@ if ( ! function_exists('hex2bin'))
 	 */
 	function hex2bin($data)
 	{
-		if (in_array($type = gettype($data), array('array', 'double', 'object', 'resource'), TRUE))
+		if (in_array($type = gettype($data), array('array', 'double', 'object', 'resource'), true))
 		{
 			if ($type === 'object' && method_exists($data, '__toString'))
 			{
@@ -126,19 +126,19 @@ if ( ! function_exists('hex2bin'))
 			else
 			{
 				trigger_error('hex2bin() expects parameter 1 to be string, '.$type.' given', E_USER_WARNING);
-				return NULL;
+				return null;
 			}
 		}
 
 		if (strlen($data) % 2 !== 0)
 		{
 			trigger_error('Hexadecimal input string must have an even length', E_USER_WARNING);
-			return FALSE;
+			return false;
 		}
 		elseif ( ! preg_match('/^[0-9a-f]*$/i', $data))
 		{
 			trigger_error('Input string must be hexadecimal string', E_USER_WARNING);
-			return FALSE;
+			return false;
 		}
 
 		return pack('H*', $data);

@@ -22,7 +22,7 @@ class CI_Arr {
 	 * @param   string  $default  The default value
 	 * @return  mixed
 	 */
-	public function get($array, $key, $default = NULL)
+	public function get($array, $key, $default = null)
 	{
 		// $array must always be an array
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
@@ -52,7 +52,7 @@ class CI_Arr {
 
 		foreach (explode('.', $key) as $key_part)
 		{
-			if (($array instanceof ArrayAccess && isset($array[$key_part])) === FALSE)
+			if (($array instanceof ArrayAccess && isset($array[$key_part])) === false)
 			{
 				if ( ! is_array($array) or ! array_key_exists($key_part, $array))
 				{
@@ -76,9 +76,9 @@ class CI_Arr {
 	 * @param   mixed   $value  The value
 	 * @return  void
 	 */
-	public function set(&$array, $key, $value = NULL)
+	public function set(&$array, $key, $value = null)
 	{
-		if (is_NULL($key))
+		if (is_null($key))
 		{
 			$array = $value;
 			return;
@@ -118,13 +118,13 @@ class CI_Arr {
 	 *
 	 * @param  array   $array  collection of arrays to pluck from
 	 * @param  string  $key    key of the value to pluck
-	 * @param  string  $index  optional return array index key, TRUE for original index
+	 * @param  string  $index  optional return array index key, true for original index
 	 * @return array   array of plucked values
 	 */
-	public function pluck($array, $key, $index = NULL)
+	public function pluck($array, $key, $index = null)
 	{
 		$return = array();
-		$get_deep = strpos($key, '.') !== FALSE;
+		$get_deep = strpos($key, '.') !== false;
 
 		if ( ! $index)
 		{
@@ -138,7 +138,7 @@ class CI_Arr {
 		{
 			foreach ($array as $i => $a)
 			{
-				$index !== TRUE && $i = (is_object($a) && ! ($a instanceof ArrayAccess)) ? $a->{$index} : $a[$index];
+				$index !== true && $i = (is_object($a) && ! ($a instanceof ArrayAccess)) ? $a->{$index} : $a[$index];
 				$return[$i] = (is_object($a) && ! ($a instanceof ArrayAccess)) ? $a->{$key} :
 					($get_deep ? $this->get($a, $key) : $a[$key]);
 			}
@@ -167,28 +167,28 @@ class CI_Arr {
 
 		if ( ! is_string($key))
 		{
-			return FALSE;
+			return false;
 		}
 
 		if (array_key_exists($key, $array))
 		{
-			return TRUE;
+			return true;
 		}
 
 		foreach (explode('.', $key) as $key_part)
 		{
-			if (($array instanceof ArrayAccess && isset($array[$key_part])) === FALSE)
+			if (($array instanceof ArrayAccess && isset($array[$key_part])) === false)
 			{
 				if ( ! is_array($array) or ! array_key_exists($key_part, $array))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 
 			$array = $array[$key_part];
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -202,9 +202,9 @@ class CI_Arr {
 	 */
 	public function delete(&$array, $key)
 	{
-		if (is_NULL($key))
+		if (is_null($key))
 		{
-			return FALSE;
+			return false;
 		}
 
 		if (is_array($key))
@@ -221,7 +221,7 @@ class CI_Arr {
 
 		if ( ! is_array($array) or ! array_key_exists($key_parts[0], $array))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$this_key = array_shift($key_parts);
@@ -237,7 +237,7 @@ class CI_Arr {
 			unset($array[$this_key]);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -306,12 +306,12 @@ class CI_Arr {
 	 * Converts the given 1 dimensional non-associative array to an associative
 	 * array.
 	 *
-	 * The array given must have an even number of elements or NULL will be returned.
+	 * The array given must have an even number of elements or null will be returned.
 	 *
 	 *     Arr::to_assoc(array('foo','bar'));
 	 *
 	 * @param   string      $arr  the array to change
-	 * @return  array|NULL  the new array or NULL
+	 * @return  array|null  the new array or null
 	 * @throws  InvalidArgumentException
 	 */
 	public function to_assoc($arr)
@@ -336,7 +336,7 @@ class CI_Arr {
 	 * Checks if the given array is an assoc array.
 	 *
 	 * @param   array  $arr  the array to check
-	 * @return  bool   TRUE if its an assoc array, FALSE if not
+	 * @return  bool   true if its an assoc array, false if not
 	 */
 	public function is_assoc($arr)
 	{
@@ -350,10 +350,10 @@ class CI_Arr {
 		{
 			if ( ! is_int($key) OR $key !== $counter++)
 			{
-				return TRUE;
+				return true;
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 	// ------------------------------------------------------------------------
@@ -363,10 +363,10 @@ class CI_Arr {
 	 *
 	 * @param   array  $array   the array to filter.
 	 * @param   array  $keys    the keys to filter
-	 * @param   bool   $remove  if TRUE, removes the matched elements.
+	 * @param   bool   $remove  if true, removes the matched elements.
 	 * @return  array
 	 */
-	public function filter_keys($array, $keys, $remove = FALSE)
+	public function filter_keys($array, $keys, $remove = false)
 	{
 		$return = array();
 		foreach ($keys as $key)
@@ -392,7 +392,7 @@ class CI_Arr {
 	 * @param   array        $original  the original array (by reference)
 	 * @param   array|mixed  $value     the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   int          $pos       the numeric position at which to insert, negative to count from the end backwards
-	 * @return  bool         FALSE when array shorter then $pos, otherwise TRUE
+	 * @return  bool         false when array shorter then $pos, otherwise true
 	 */
 	public function insert(array &$original, $value, $pos)
 	{
@@ -403,7 +403,7 @@ class CI_Arr {
 
 		array_splice($original, $pos, 0, $value);
 
-		return TRUE;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -415,18 +415,18 @@ class CI_Arr {
 	 * @param   array        $original  the original array (by reference)
 	 * @param   array|mixed  $values    the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   int          $pos       the numeric position at which to insert, negative to count from the end backwards
-	 * @return  bool         FALSE when array shorter then $pos, otherwise TRUE
+	 * @return  bool         false when array shorter then $pos, otherwise true
 	 */
 	public function insert_assoc(array &$original, array $values, $pos)
 	{
 		if (count($original) < abs($pos))
 		{
-			return FALSE;
+			return false;
 		}
 
-		$original = array_slice($original, 0, $pos, TRUE) + $values + array_slice($original, $pos, NULL, TRUE);
+		$original = array_slice($original, 0, $pos, true) + $values + array_slice($original, $pos, null, true);
 
-		return TRUE;
+		return true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -439,13 +439,13 @@ class CI_Arr {
 	 * @param   array|mixed  $value     the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   string|int   $key       the key before which to insert
 	 * @param   bool         $is_assoc  whether the input is an associative array
-	 * @return  bool         FALSE when key isn't found in the array, otherwise TRUE
+	 * @return  bool         false when key isn't found in the array, otherwise true
 	 */
-	public function insert_before_key(array &$original, $value, $key, $is_assoc = FALSE)
+	public function insert_before_key(array &$original, $value, $key, $is_assoc = false)
 	{
 		$pos = array_search($key, array_keys($original));
 
-		if ($pos === FALSE)
+		if ($pos === false)
 		{
 			throw new Exception('Unknown key before which to insert the new value into the array.');
 		}
@@ -463,13 +463,13 @@ class CI_Arr {
 	 * @param   array|mixed  $value     the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   string|int   $key       the key after which to insert
 	 * @param   bool         $is_assoc  whether the input is an associative array
-	 * @return  bool         FALSE when key isn't found in the array, otherwise TRUE
+	 * @return  bool         false when key isn't found in the array, otherwise true
 	 */
-	public function insert_after_key(array &$original, $value, $key, $is_assoc = FALSE)
+	public function insert_after_key(array &$original, $value, $key, $is_assoc = false)
 	{
 		$pos = array_search($key, array_keys($original));
 
-		if ($pos === FALSE)
+		if ($pos === false)
 		{
 			throw new Exception('Unknown key after which to insert the new value into the array.');
 		}
@@ -486,16 +486,16 @@ class CI_Arr {
 	 * @param   array|mixed  $value     the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   string|int   $search    the value after which to insert
 	 * @param   bool         $is_assoc  whether the input is an associative array
-	 * @return  bool         FALSE when value isn't found in the array, otherwise TRUE
+	 * @return  bool         false when value isn't found in the array, otherwise true
 	 */
-	public function insert_after_value(array &$original, $value, $search, $is_assoc = FALSE)
+	public function insert_after_value(array &$original, $value, $search, $is_assoc = false)
 	{
 		$key = array_search($search, $original);
 
-		if ($key === FALSE)
+		if ($key === false)
 		{
 			throw new Exception('Unknown value after which to insert the new value into the array.');
-			return FALSE;
+			return false;
 		}
 
 		return $this->insert_after_key($original, $value, $key, $is_assoc);
@@ -510,13 +510,13 @@ class CI_Arr {
 	 * @param   array|mixed  $value     the value(s) to insert, if you want to insert an array it needs to be in an array itself
 	 * @param   string|int   $search    the value after which to insert
 	 * @param   bool         $is_assoc  whether the input is an associative array
-	 * @return  bool         FALSE when value isn't found in the array, otherwise TRUE
+	 * @return  bool         false when value isn't found in the array, otherwise true
 	 */
-	public function insert_before_value(array &$original, $value, $search, $is_assoc = FALSE)
+	public function insert_before_value(array &$original, $value, $search, $is_assoc = false)
 	{
 		$key = array_search($search, $original);
 
-		if ($key === FALSE)
+		if ($key === false)
 		{
 			throw new Exception('Unknown value before which to insert the new value into the array.');
 		}
@@ -586,14 +586,14 @@ class CI_Arr {
 	 * @param   bool   $ignore_case  whether to sort case insensitive
 	 * @return  array
 	 */
-	public function multisort($array, $conditions, $ignore_case = FALSE)
+	public function multisort($array, $conditions, $ignore_case = false)
 	{
 		$temp = array();
 		$keys = array_keys($conditions);
 
 		foreach($keys as $key)
 		{
-			$temp[$key] = $this->pluck($array, $key, TRUE);
+			$temp[$key] = $this->pluck($array, $key, true);
 			is_array($conditions[$key]) OR $conditions[$key] = array($conditions[$key]);
 		}
 
@@ -642,7 +642,7 @@ class CI_Arr {
 	 * @param   string          $new_key  the replacement key
 	 * @return  array                     the array with the new keys
 	 */
-	public function replace_key($source, $replace, $new_key = NULL)
+	public function replace_key($source, $replace, $new_key = null)
 	{
 		if(is_string($replace))
 		{
@@ -775,7 +775,7 @@ class CI_Arr {
 	 * @param   string|array    $key     the key or array of keys && values
 	 * @param   mixed           $value   the value to prepend
 	 */
-	public function prepend(&$arr, $key, $value = NULL)
+	public function prepend(&$arr, $key, $value = null)
 	{
 		$arr = (is_array($key) ? $key : array($key => $value)) + $arr;
 	}
@@ -790,25 +790,25 @@ class CI_Arr {
 	 * @param   bool   $strict
 	 * @return  bool   whether the needle is found in the haystack.
 	 */
-	public function in_array_recursive($needle, $haystack, $strict = FALSE)
+	public function in_array_recursive($needle, $haystack, $strict = false)
 	{
 		foreach ($haystack as $value)
 		{
 			if ( ! $strict && $needle == $value)
 			{
-				return TRUE;
+				return true;
 			}
 			elseif ($needle === $value)
 			{
-				return TRUE;
+				return true;
 			}
 			elseif (is_array($value) && $this->in_array_recursive($needle, $value, $strict))
 			{
-				return TRUE;
+				return true;
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// ------------------------------------------------------------------------
@@ -817,10 +817,10 @@ class CI_Arr {
 	 * Checks if the given array is a multidimensional array.
 	 *
 	 * @param   array  $arr       the array to check
-	 * @param   bool   $all_keys  if TRUE, check that all elements are arrays
-	 * @return  bool   TRUE if its a multidimensional array, FALSE if not
+	 * @param   bool   $all_keys  if true, check that all elements are arrays
+	 * @return  bool   true if its a multidimensional array, false if not
 	 */
-	public function is_multi($array, $all_keys = FALSE)
+	public function is_multi($array, $all_keys = false)
 	{
 		$values = array_filter($array, 'is_array');
 		return $all_keys ? count($arr) === count($values) : count($values) > 0;
@@ -831,27 +831,27 @@ class CI_Arr {
 	/**
 	 * Searches the array for a given value && returns the
 	 * corresponding key or default value.
-	 * If $recursive is set to TRUE, then the Arr::search()
+	 * If $recursive is set to true, then the Arr::search()
 	 * function will return a delimiter-notated key using $delimiter.
 	 *
 	 * @param   array   $array     The search array
 	 * @param   mixed   $value     The searched value
 	 * @param   string  $default   The default value
 	 * @param   bool    $recursive Whether to get keys recursive
-	 * @param   string  $delimiter The delimiter, when $recursive is TRUE
-	 * @param   bool    $strict    If TRUE, do a strict key comparison
+	 * @param   string  $delimiter The delimiter, when $recursive is true
+	 * @param   bool    $strict    If true, do a strict key comparison
 	 * @return  mixed
 	 */
-	public function search($array, $value, $default = NULL, $recursive = TRUE, $delimiter = '.', $strict = FALSE)
+	public function search($array, $value, $default = null, $recursive = true, $delimiter = '.', $strict = false)
 	{
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
 		{
 			throw new InvalidArgumentException('First parameter must be an array or ArrayAccess object.');
 		}
 
-		if ( ! is_NULL($default) && ! is_int($default) && ! is_string($default))
+		if ( ! is_null($default) && ! is_int($default) && ! is_string($default))
 		{
-			throw new InvalidArgumentException('Expects parameter 3 to be an string or integer or NULL.');
+			throw new InvalidArgumentException('Expects parameter 3 to be an string or integer or null.');
 		}
 
 		if ( ! is_string($delimiter))
@@ -861,14 +861,14 @@ class CI_Arr {
 
 		$key = array_search($value, $array, $strict);
 
-		if ($recursive && $key === FALSE)
+		if ($recursive && $key === false)
 		{
 			$keys = array();
 			foreach ($array as $k => $v)
 			{
 				if (is_array($v))
 				{
-					$rk = $this->search($v, $value, $default, TRUE, $delimiter, $strict);
+					$rk = $this->search($v, $value, $default, true, $delimiter, $strict);
 					if ($rk !== $default)
 					{
 						$keys = array($k, $rk);
@@ -876,10 +876,10 @@ class CI_Arr {
 					}
 				}
 			}
-			$key = count($keys) ? implode($delimiter, $keys) : FALSE;
+			$key = count($keys) ? implode($delimiter, $keys) : false;
 		}
 
-		return $key === FALSE ? $default : $key;
+		return $key === false ? $default : $key;
 	}
 
 	// ------------------------------------------------------------------------
@@ -898,10 +898,10 @@ class CI_Arr {
 			// contrary to popular belief, this is not as static as you think...
 			static $vars = array();
 
-			if (in_array($item, $vars, TRUE))
+			if (in_array($item, $vars, true))
 			{
 				// duplicate
-				return FALSE;
+				return false;
 			}
 			else
 			{
@@ -909,7 +909,7 @@ class CI_Arr {
 				$vars[] = $item;
 
 				// unique
-				return TRUE;
+				return true;
 			}
 		});
 	}
@@ -961,12 +961,12 @@ class CI_Arr {
 	 *
 	 * @param   array    $array      the array containing the values
 	 * @param   string   $key        key of the current entry to use as reference
-	 * @param   bool     $get_value  if TRUE, return the previous value instead of the previous key
-	 * @param   bool     $strict     if TRUE, do a strict key comparison
+	 * @param   bool     $get_value  if true, return the previous value instead of the previous key
+	 * @param   bool     $strict     if true, do a strict key comparison
 	 *
-	 * @return  mixed  the value in the array, NULL if there is no previous value, or FALSE if the key doesn't exist
+	 * @return  mixed  the value in the array, null if there is no previous value, or false if the key doesn't exist
 	 */
-	public function previous_by_key($array, $key, $get_value = FALSE, $strict = FALSE)
+	public function previous_by_key($array, $key, $get_value = false, $strict = false)
 	{
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
 		{
@@ -977,17 +977,17 @@ class CI_Arr {
 		$keys = array_keys($array);
 
 		// && do a lookup of the key passed
-		if (($index = array_search($key, $keys, $strict)) === FALSE)
+		if (($index = array_search($key, $keys, $strict)) === false)
 		{
 			// key does not exist
-			return FALSE;
+			return false;
 		}
 
 		// check if we have a previous key
 		elseif ( ! isset($keys[$index-1]))
 		{
 			// there is none
-			return NULL;
+			return null;
 		}
 
 		// return the value or the key of the array entry the previous key points to
@@ -1001,12 +1001,12 @@ class CI_Arr {
 	 *
 	 * @param   array    $array      the array containing the values
 	 * @param   string   $key        key of the current entry to use as reference
-	 * @param   bool     $get_value  if TRUE, return the next value instead of the next key
-	 * @param   bool     $strict     if TRUE, do a strict key comparison
+	 * @param   bool     $get_value  if true, return the next value instead of the next key
+	 * @param   bool     $strict     if true, do a strict key comparison
 	 *
-	 * @return  mixed  the value in the array, NULL if there is no next value, or FALSE if the key doesn't exist
+	 * @return  mixed  the value in the array, null if there is no next value, or false if the key doesn't exist
 	 */
-	public function next_by_key($array, $key, $get_value = FALSE, $strict = FALSE)
+	public function next_by_key($array, $key, $get_value = false, $strict = false)
 	{
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
 		{
@@ -1017,17 +1017,17 @@ class CI_Arr {
 		$keys = array_keys($array);
 
 		// && do a lookup of the key passed
-		if (($index = array_search($key, $keys, $strict)) === FALSE)
+		if (($index = array_search($key, $keys, $strict)) === false)
 		{
 			// key does not exist
-			return FALSE;
+			return false;
 		}
 
 		// check if we have a previous key
 		elseif ( ! isset($keys[$index+1]))
 		{
 			// there is none
-			return NULL;
+			return null;
 		}
 
 		// return the value or the key of the array entry the previous key points to
@@ -1041,12 +1041,12 @@ class CI_Arr {
 	 *
 	 * @param   array    $array      the array containing the values
 	 * @param   string   $value      value of the current entry to use as reference
-	 * @param   bool     $get_value  if TRUE, return the previous value instead of the previous key
-	 * @param   bool     $strict     if TRUE, do a strict key comparison
+	 * @param   bool     $get_value  if true, return the previous value instead of the previous key
+	 * @param   bool     $strict     if true, do a strict key comparison
 	 *
-	 * @return  mixed  the value in the array, NULL if there is no previous value, or FALSE if the key doesn't exist
+	 * @return  mixed  the value in the array, null if there is no previous value, or false if the key doesn't exist
 	 */
-	public function previous_by_value($array, $value, $get_value = TRUE, $strict = FALSE)
+	public function previous_by_value($array, $value, $get_value = true, $strict = false)
 	{
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
 		{
@@ -1054,10 +1054,10 @@ class CI_Arr {
 		}
 
 		// find the current value in the array
-		if (($key = array_search($value, $array, $strict)) === FALSE)
+		if (($key = array_search($value, $array, $strict)) === false)
 		{
 			// bail out if not found
-			return FALSE;
+			return false;
 		}
 
 		// get the list of keys, && find our found key
@@ -1067,7 +1067,7 @@ class CI_Arr {
 		// if there is no previous one, bail out
 		if ( ! isset($keys[$index-1]))
 		{
-			return NULL;
+			return null;
 		}
 
 		// return the value or the key of the array entry the previous key points to
@@ -1081,12 +1081,12 @@ class CI_Arr {
 	 *
 	 * @param   array    $array      the array containing the values
 	 * @param   string   $value      value of the current entry to use as reference
-	 * @param   bool     $get_value  if TRUE, return the next value instead of the next key
-	 * @param   bool     $strict     if TRUE, do a strict key comparison
+	 * @param   bool     $get_value  if true, return the next value instead of the next key
+	 * @param   bool     $strict     if true, do a strict key comparison
 	 *
-	 * @return  mixed  the value in the array, NULL if there is no next value, or FALSE if the key doesn't exist
+	 * @return  mixed  the value in the array, null if there is no next value, or false if the key doesn't exist
 	 */
-	public function next_by_value($array, $value, $get_value = TRUE, $strict = FALSE)
+	public function next_by_value($array, $value, $get_value = true, $strict = false)
 	{
 		if ( ! is_array($array) && ! $array instanceof ArrayAccess)
 		{
@@ -1094,10 +1094,10 @@ class CI_Arr {
 		}
 
 		// find the current value in the array
-		if (($key = array_search($value, $array, $strict)) === FALSE)
+		if (($key = array_search($value, $array, $strict)) === false)
 		{
 			// bail out if not found
-			return FALSE;
+			return false;
 		}
 
 		// get the list of keys, && find our found key
@@ -1107,7 +1107,7 @@ class CI_Arr {
 		// if there is no next one, bail out
 		if ( ! isset($keys[$index+1]))
 		{
-			return NULL;
+			return null;
 		}
 
 		// return the value or the key of the array entry the next key points to
@@ -1123,11 +1123,11 @@ class CI_Arr {
 	 *
 	 * @param   array    $array    the array containing the values
 	 * @param   array    $keys     list of keys (or indices) to return
-	 * @param   mixed    $default  value of missing keys; default NULL
+	 * @param   mixed    $default  value of missing keys; default null
 	 *
 	 * @return  array  An array containing the same set of keys provided.
 	 */
-	public function subset(array $array, array $keys, $default = NULL)
+	public function subset(array $array, array $keys, $default = null)
 	{
 		$result = array();
 

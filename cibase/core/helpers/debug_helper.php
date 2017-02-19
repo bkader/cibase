@@ -57,10 +57,10 @@ if ( ! function_exists('debug')) {
 	 * @param 	mixed
 	 * @return 	boolean 	If set, if uses exit;
 	 */
-	function debug($var = '', $exit = FALSE)
+	function debug($var = '', $exit = false)
 	{
-		echo _before().((is_array($var) || is_object($var)) ? print_r($var, TRUE) : $var)._after();
-		if ($exit === TRUE) exit;
+		echo _before().((is_array($var) || is_object($var)) ? print_r($var, true) : $var)._after();
+		if ($exit === true) exit;
 	}
 }
 
@@ -120,12 +120,12 @@ if ( ! function_exists('debug_session')) {
 	 * @link 	https://github.com/bkader
 	 * @link 	https://twitter.com/KaderBouyakoub
 	 */
-	function debug_session($exit = FALSE)
+	function debug_session($exit = false)
 	{
 		echo _before();
 		print_r(get_instance()->session->all_userdata());
 		echo _after();
-		if ($exit === TRUE) exit;
+		if ($exit === true) exit;
 	}
 }
 

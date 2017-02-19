@@ -35,19 +35,19 @@ class MY_Controller extends CI_Controller
 	 * Module's name
 	 * @var 	string
 	 */
-	public $module = NULL;
+	public $module = null;
 
 	/**
 	 * Controller's name
 	 * @var string
 	 */
-	protected $controller = NULL;
+	protected $controller = null;
 
 	/**
 	 * Requested method's name
 	 * @var string
 	 */
-	protected $method = NULL;
+	protected $method = null;
 
 	/**
 	 * Data of arrat to pass to views
@@ -78,8 +78,8 @@ class MY_Controller extends CI_Controller
 		$this->_autoloader();
 
 		// Set available languages and current language
-		$this->language = $this->config->language(TRUE);
-		$this->languages = $this->config->languages(TRUE);
+		$this->language = $this->config->language(true);
+		$this->languages = $this->config->languages(true);
 		// Remove the current language from the lsit
 		unset($this->languages[$this->language['code']]);
 
@@ -88,7 +88,7 @@ class MY_Controller extends CI_Controller
 			'language' => $this->language,
 			'languages' => $this->languages,
 			'site_name' => config('app.name'), // Use @$site_name to avoid errors
-		), NULL, TRUE);
+		), null, true);
 	}
 
 	// ------------------------------------------------------------------------
@@ -175,23 +175,17 @@ class MY_Controller extends CI_Controller
 	public function prepare_form($rules = array())
 	{
 		// Load form validation library if not alreadu loaded
-		if ( ! class_exists('CI_Form_validation'))
-		{
+		if ( ! class_exists('CI_Form_validation')) {
 			$this->load->library('form_validation');
 		}
 
-		// Set error delimiters
-		$this->form_validation->set_error_delimiters('<li>', '</li>');
-
 		// Load form helper if not already loaded
-		if ( ! function_exists('form_open'))
-		{
+		if ( ! function_exists('form_open')) {
 			$this->load->helper('form');
 		}
 
 		// Set rules
-		if ( ! empty($rules))
-		{
+		if ( ! empty($rules) && is_array($rules)) {
 			$this->form_validation->set_rules($rules);
 		}
 	}
@@ -331,6 +325,12 @@ class Ajax_Controller extends Public_Controller
 class User_Controller extends Public_Controller
 {
 	/**
+	 * Ignored URI when redirecting to login
+	 * @var array
+	 */
+	protected $ignored_pages = array('logout');
+
+	/**
 	 * Constructor
 	 * @param 	none
 	 * @return 	void
@@ -339,12 +339,15 @@ class User_Controller extends Public_Controller
 	{
 		parent::before();
 
+		// Prepare redirection URL
+		$uri = $this->uri->uri_string();
+		in_array($uri, $this->ignored_pages) && $uri = '';
+
 		// Login check logic
-		// Make sure the request is always AJAX
-		// if ( ! $this->input->is_ajax_request())
+		// if ( ! $this->auth_lib->is_logged_in())
 		// {
-			redirect('login?next='.urlencode($this->uri->uri_string()), 'refresh');
-			// exit;
+			redirect(Route::named('login').'?next='.urlencode($uri), 'refresh');
+			exit;
 		// }
 	}
 }

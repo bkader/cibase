@@ -24,7 +24,7 @@ class CI_Xmlrpc {
 	 *
 	 * @var	bool
 	 */
-	public $debug		= FALSE;
+	public $debug		= false;
 
 	/**
 	 * I4 data type
@@ -213,7 +213,7 @@ class CI_Xmlrpc {
 	 *
 	 * @var	bool
 	 */
-	public $xss_clean		= TRUE;
+	public $xss_clean		= true;
 
 	// --------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ class CI_Xmlrpc {
 	 * @param	int	$proxy_port
 	 * @return	void
 	 */
-	public function server($url, $port = 80, $proxy = FALSE, $proxy_port = 8080)
+	public function server($url, $port = 80, $proxy = false, $proxy_port = 8080)
 	{
 		if (stripos($url, 'http') !== 0)
 		{
@@ -348,7 +348,7 @@ class CI_Xmlrpc {
 	 */
 	public function timeout($seconds = 5)
 	{
-		if ($this->client !== NULL && is_int($seconds))
+		if ($this->client !== null && is_int($seconds))
 		{
 			$this->client->timeout = $seconds;
 		}
@@ -399,9 +399,9 @@ class CI_Xmlrpc {
 	 * @param	bool	$flag
 	 * @return	void
 	 */
-	public function set_debug($flag = TRUE)
+	public function set_debug($flag = true)
 	{
-		$this->debug = ($flag === TRUE);
+		$this->debug = ($flag === true);
 	}
 
 	// --------------------------------------------------------------------
@@ -456,11 +456,11 @@ class CI_Xmlrpc {
 		if ( ! $this->result = $this->client->send($this->message) OR ! is_object($this->result->val))
 		{
 			$this->error = $this->result->errstr;
-			return FALSE;
+			return false;
 		}
 
 		$this->response = $this->result->decode();
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -568,7 +568,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 	 *
 	 * @var	string
 	 */
-	public $proxy			= FALSE;
+	public $proxy			= false;
 
 	/**
 	 * Proxy port
@@ -603,7 +603,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 	 *
 	 * @var	bool
 	 */
-	public $no_multicall	= FALSE;
+	public $no_multicall	= false;
 
 	// --------------------------------------------------------------------
 
@@ -617,7 +617,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 	 * @param	int	$proxy_port
 	 * @return	void
 	 */
-	public function __construct($path, $server, $port = 80, $proxy = FALSE, $proxy_port = 8080)
+	public function __construct($path, $server, $port = 80, $proxy = false, $proxy_port = 8080)
 	{
 		parent::__construct();
 
@@ -665,7 +665,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 	 */
 	public function sendPayload($msg)
 	{
-		if ($this->proxy === FALSE)
+		if ($this->proxy === false)
 		{
 			$server = $this->server;
 			$port = $this->port;
@@ -703,7 +703,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 
 		for ($written = $timestamp = 0, $length = strlen($op); $written < $length; $written += $result)
 		{
-			if (($result = fwrite($fp, substr($op, $written))) === FALSE)
+			if (($result = fwrite($fp, substr($op, $written))) === false)
 			{
 				break;
 			}
@@ -716,7 +716,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 				}
 				elseif ($timestamp < (time() - $this->timeout))
 				{
-					$result = FALSE;
+					$result = false;
 					break;
 				}
 			}
@@ -726,7 +726,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 			}
 		}
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			error_log($this->xmlrpcstr['http_error']);
 			return new XML_RPC_Response(0, $this->xmlrpcerr['http_error'], $this->xmlrpcstr['http_error']);
@@ -782,7 +782,7 @@ class XML_RPC_Response
 	 *
 	 * @var	bool
 	 */
-	public $xss_clean	= TRUE;
+	public $xss_clean	= true;
 
 	// --------------------------------------------------------------------
 
@@ -889,7 +889,7 @@ class XML_RPC_Response
 	 * @param	mixed	$array
 	 * @return	array
 	 */
-	public function decode($array = NULL)
+	public function decode($array = null)
 	{
 		$CI =& get_instance();
 
@@ -974,13 +974,13 @@ class XML_RPC_Response
 	 * @param	bool
 	 * @return	int	unix timestamp
 	 */
-	public function iso8601_decode($time, $utc = FALSE)
+	public function iso8601_decode($time, $utc = false)
 	{
 		// Return a time in the localtime, or UTC
 		$t = 0;
 		if (preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})/', $time, $regs))
 		{
-			$fnc = ($utc === TRUE) ? 'gmmktime' : 'mktime';
+			$fnc = ($utc === true) ? 'gmmktime' : 'mktime';
 			$t = $fnc($regs[4], $regs[5], $regs[6], $regs[2], $regs[3], $regs[1]);
 		}
 		return $t;
@@ -1035,7 +1035,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 	 * @param	array	$pars
 	 * @return	void
 	 */
-	public function __construct($method, $pars = FALSE)
+	public function __construct($method, $pars = false)
 	{
 		parent::__construct();
 
@@ -1091,7 +1091,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		}
 
 		// Display HTTP content for debugging
-		if ($this->debug === TRUE)
+		if ($this->debug === true)
 		{
 			echo "<pre>---DATA---\n".htmlspecialchars($data)."\n---END DATA---\n\n</pre>";
 		}
@@ -1126,7 +1126,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		);
 
 		xml_set_object($parser, $this);
-		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, TRUE);
+		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
 		xml_set_element_handler($parser, 'open_tag', 'closing_tag');
 		xml_set_character_data_handler($parser, 'character_data');
 		//xml_set_default_handler($parser, 'default_handler');
@@ -1159,7 +1159,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		// Got ourselves some badness, it seems
 		if ($this->xh[$pname]['isf'] > 1)
 		{
-			if ($this->debug === TRUE)
+			if ($this->debug === true)
 			{
 				echo "---Invalid Return---\n".$this->xh[$pname]['isf_reason']."---Invalid Return---\n\n";
 			}
@@ -1172,7 +1172,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		}
 
 		// Display XML content for debugging
-		if ($this->debug === TRUE)
+		if ($this->debug === true)
 		{
 			echo '<pre>';
 
@@ -1259,7 +1259,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 			}
 		}
 		// not top level element: see if parent is OK
-		elseif ( ! in_array($this->xh[$the_parser]['stack'][0], $this->valid_parents[$name], TRUE))
+		elseif ( ! in_array($this->xh[$the_parser]['stack'][0], $this->valid_parents[$name], true))
 		{
 			$this->xh[$the_parser]['isf'] = 2;
 			$this->xh[$the_parser]['isf_reason'] = 'XML-RPC element '.$name.' cannot be child of '.$this->xh[$the_parser]['stack'][0];
@@ -1282,7 +1282,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				$this->xh[$the_parser]['isf'] = 1;
 				break;
 			case 'PARAM':
-				$this->xh[$the_parser]['value'] = NULL;
+				$this->xh[$the_parser]['value'] = null;
 				break;
 			case 'VALUE':
 				$this->xh[$the_parser]['vt'] = 'value';
@@ -1311,8 +1311,8 @@ class XML_RPC_Message extends CI_Xmlrpc
 				// Set name of <member> to nothing to prevent errors later if no <name> is found
 				$this->xh[$the_parser]['valuestack'][0]['name'] = '';
 
-				// Set NULL value to check to see if value passed for this param/member
-				$this->xh[$the_parser]['value'] = NULL;
+				// Set null value to check to see if value passed for this param/member
+				$this->xh[$the_parser]['value'] = null;
 				break;
 			case 'DATA':
 			case 'METHODCALL':
@@ -1390,7 +1390,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				}
 				elseif ($name === 'BOOLEAN')
 				{
-					// Translated BOOLEAN values to TRUE AND FALSE
+					// Translated BOOLEAN values to true AND false
 					$this->xh[$the_parser]['value'] = (bool) $this->xh[$the_parser]['ac'];
 				}
 				elseif ($name=='DOUBLE')
@@ -1689,7 +1689,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 
 		if ($type === $this->xmlrpcBoolean)
 		{
-			$val = (int) (strcasecmp($val, 'true') === 0 OR $val === 1 OR ($val === TRUE && strcasecmp($val, 'false')));
+			$val = (int) (strcasecmp($val, 'true') === 0 OR $val === 1 OR ($val === true && strcasecmp($val, 'false')));
 		}
 
 		if ($this->mytype === 2)
@@ -1878,7 +1878,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 	 * @param	bool
 	 * @return	string
 	*/
-	public function iso8601_encode($time, $utc = FALSE)
+	public function iso8601_encode($time, $utc = false)
 	{
 		return ($utc) ? strftime('%Y%m%dT%H:%i:%s', $time) : gmstrftime('%Y%m%dT%H:%i:%s', $time);
 	}

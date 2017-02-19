@@ -66,7 +66,7 @@ class CI_URI {
 
 		// If query strings are enabled, we don't need to parse any segments.
 		// However, they don't make sense under CLI.
-		if (is_cli() OR $this->config->item('enable_query_strings') !== TRUE)
+		if (is_cli() OR $this->config->item('enable_query_strings') !== true)
 		{
 			$this->_permitted_uri_chars = $this->config->item('permitted_uri_chars');
 
@@ -132,7 +132,7 @@ class CI_URI {
 	 * @param	mixed		$no_result	What to return if the segment index is not found
 	 * @return	mixed
 	 */
-	public function segment($n, $no_result = NULL)
+	public function segment($n, $no_result = null)
 	{
 		return isset($this->segments[$n]) ? $this->segments[$n] : $no_result;
 	}
@@ -164,7 +164,7 @@ class CI_URI {
 	 * @param	mixed		$no_result	What to return if the segment index is not found
 	 * @return	mixed
 	 */
-	public function rsegment($n, $no_result = NULL)
+	public function rsegment($n, $no_result = null)
 	{
 		return isset($this->rsegments[$n]) ? $this->rsegments[$n] : $no_result;
 	}
@@ -244,7 +244,7 @@ class CI_URI {
 	 * @param   string  $uri            The uri to create the URL for
 	 * @param   array   $variables      Some variables for the URL
 	 * @param   array   $get_variables  Any GET urls to append via a query string
-	 * @param   bool    $secure         If FALSE, force http. If true, force https
+	 * @param   bool    $secure         If false, force http. If true, force https
 	 * @return  string
 	 */
 	public function create($uri = null, $variables = array(), $get_variables = array(), $secure = null)
@@ -266,10 +266,10 @@ class CI_URI {
 		$url .= ltrim($uri, '/');
 
 		// stick a url suffix onto it if defined and needed
-		if ($url_suffix = $this->config->get('url_suffix', FALSE) && substr($url, -1) != '/')
+		if ($url_suffix = $this->config->get('url_suffix', false) && substr($url, -1) != '/')
 		{
 			$current_suffix = strrchr($url, '.');
-			if ( ! $current_suffix or strpos($current_suffix, '/') !== FALSE)
+			if ( ! $current_suffix or strpos($current_suffix, '/') !== false)
 			{
 				$url .= $url_suffix;
 			}
@@ -277,7 +277,7 @@ class CI_URI {
 
 		if ( ! empty($get_variables))
 		{
-			$char = strpos($url, '?') === FALSE ? '?' : '&';
+			$char = strpos($url, '?') === false ? '?' : '&';
 			if (is_string($get_variables))
 			{
 				$url .= $char.str_replace('%3A', ':', $get_variables);
@@ -368,7 +368,7 @@ class CI_URI {
 
 			global $IN;
 			// merge them with the existing query string data
-			$vars = array_merge($IN->get(NULL, TRUE), $vars);
+			$vars = array_merge($IN->get(null, true), $vars);
 		}
 
 		// return the updated uri
@@ -478,7 +478,7 @@ class CI_URI {
 	protected function _set_uri_string($str)
 	{
 		// Filter out control characters and trim slashes
-		$this->uri_string = trim(remove_invisible_characters($str, FALSE), '/');
+		$this->uri_string = trim(remove_invisible_characters($str, false), '/');
 
 		if ($this->uri_string !== '')
 		{
@@ -493,7 +493,7 @@ class CI_URI {
 				}
 			}
 
-			$this->segments[0] = NULL;
+			$this->segments[0] = null;
 			// Populate the segments array
 			foreach (explode('/', trim($this->uri_string, '/')) as $val)
 			{
@@ -528,7 +528,7 @@ class CI_URI {
 			return '';
 		}
 
-		// parse_url() returns FALSE if no host is present, but the path or query string
+		// parse_url() returns false if no host is present, but the path or query string
 		// contains a colon followed by a number
 		$uri = parse_url('http://dummy'.$_SERVER['REQUEST_URI']);
 		$query = isset($uri['query']) ? $uri['query'] : '';
@@ -628,7 +628,7 @@ class CI_URI {
 	{
 		$uris = array();
 		$tok = strtok($uri, '/');
-		while ($tok !== FALSE)
+		while ($tok !== false)
 		{
 			if (( ! empty($tok) OR $tok === '0') && $tok !== '..')
 			{
@@ -673,7 +673,7 @@ class CI_URI {
 		{
 			return (count($default) === 0)
 				? array()
-				: array_fill_keys($default, NULL);
+				: array_fill_keys($default, null);
 		}
 
 		$segments = array_slice($this->$segment_array(), ($n - 1));
@@ -688,7 +688,7 @@ class CI_URI {
 			}
 			else
 			{
-				$retval[$seg] = NULL;
+				$retval[$seg] = null;
 				$lastval = $seg;
 			}
 
@@ -701,7 +701,7 @@ class CI_URI {
 			{
 				if ( ! array_key_exists($val, $retval))
 				{
-					$retval[$val] = NULL;
+					$retval[$val] = null;
 				}
 			}
 		}

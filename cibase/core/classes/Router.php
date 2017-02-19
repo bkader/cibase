@@ -64,7 +64,7 @@ class CI_Router {
 	 *
 	 * @var	bool
 	 */
-	public $translate_uri_dashes = FALSE;
+	public $translate_uri_dashes = false;
 
 	/**
 	 * Enable query strings flag
@@ -73,7 +73,7 @@ class CI_Router {
 	 *
 	 * @var	bool
 	 */
-	public $enable_query_strings = FALSE;
+	public $enable_query_strings = false;
 
 	// --------------------------------------------------------------------
 
@@ -85,12 +85,12 @@ class CI_Router {
 	 * @param	array	$routing
 	 * @return	void
 	 */
-	public function __construct($routing = NULL)
+	public function __construct($routing = null)
 	{
 		$this->config =& load_class('Config', 'core');
 		$this->uri =& load_class('URI', 'core');
 
-		$this->enable_query_strings = ( ! is_cli() && $this->config->item('enable_query_strings') === TRUE);
+		$this->enable_query_strings = ( ! is_cli() && $this->config->item('enable_query_strings') === true);
 
 		// If a directory override is configured, it has to be set before any dynamic routing logic
 		is_array($routing) && isset($routing['directory']) && $this->set_directory($routing['directory']);
@@ -119,7 +119,7 @@ class CI_Router {
 	protected function _set_routing()
 	{
 		// Load the routes.php file. It would be great if we could
-		// skip this for enable_query_strings = TRUE, but then
+		// skip this for enable_query_strings = true, but then
 		// default_controller would be empty ...
 		if (file_exists(APPPATH.'config/routes.php'))
 		{
@@ -220,7 +220,7 @@ class CI_Router {
 			return;
 		}
 
-		if ($this->translate_uri_dashes === TRUE)
+		if ($this->translate_uri_dashes === true)
 		{
 			$segments[0] = str_replace('-', '_', $segments[0]);
 			if (isset($segments[1]))
@@ -239,7 +239,7 @@ class CI_Router {
 			$segments[1] = 'index';
 		}
 
-		array_unshift($segments, NULL);
+		array_unshift($segments, null);
 		unset($segments[0]);
 		$this->uri->rsegments = $segments;
 	}
@@ -303,14 +303,14 @@ class CI_Router {
 		while ($c-- > 0)
 		{
 			$test = $this->directory
-				.ucfirst($this->translate_uri_dashes === TRUE ? str_replace('-', '_', $segments[0]) : $segments[0]);
+				.ucfirst($this->translate_uri_dashes === true ? str_replace('-', '_', $segments[0]) : $segments[0]);
 
 			if ( ! file_exists(APPPATH.'classes/controllers/'.$test.'.php')
-				&& $directory_override === FALSE
+				&& $directory_override === false
 				&& is_dir(APPPATH.'classes/controllers/'.$this->directory.$segments[0])
 			)
 			{
-				$this->set_directory(array_shift($segments), TRUE);
+				$this->set_directory(array_shift($segments), true);
 				continue;
 			}
 
@@ -372,7 +372,7 @@ class CI_Router {
 					$val = call_user_func_array($val, $matches);
 				}
 				// Are we using the default routing method for back-references?
-				elseif (strpos($val, '$') !== FALSE && strpos($key, '(') !== FALSE)
+				elseif (strpos($val, '$') !== false && strpos($key, '(') !== false)
 				{
 					$val = preg_replace('#^'.$key.'$#', $val, $uri);
 				}
@@ -448,9 +448,9 @@ class CI_Router {
 	 * @param	bool	$append	Whether we're appending rather than setting the full value
 	 * @return	void
 	 */
-	public function set_directory($dir, $append = FALSE)
+	public function set_directory($dir, $append = false)
 	{
-		if ($append !== TRUE OR empty($this->directory))
+		if ($append !== true OR empty($this->directory))
 		{
 			$this->directory = str_replace('.', '', trim($dir, '/')).'/';
 		}

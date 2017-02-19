@@ -1,5 +1,5 @@
 <?php
-(defined('BASEPATH')) OR exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Template Library
@@ -22,19 +22,19 @@ class Template {
 	 * Module's name
 	 * @var string
 	 */
-	protected $module = NULL;
+	protected $module = null;
 
 	/**
 	 * Controller's name
 	 * @var string
 	 */
-	protected $controller = NULL;
+	protected $controller = null;
 
 	/**
 	 * Method's name
 	 * @var string
 	 */
-	protected $method = NULL;
+	protected $method = null;
 
 	/**
 	 * Master view file
@@ -82,7 +82,7 @@ class Template {
 	 * Whether to compress HTML output or not
 	 * @var boolean
 	 */
-	protected $compress = FALSE;
+	protected $compress = false;
 
 	/**
 	 * Array of CSS files
@@ -146,7 +146,7 @@ class Template {
 			'base_url'    => base_url(),
 			'current_url' => current_url(),
 			'assets_url'  => $this->assets_url(),
-		), NULL, TRUE);
+		), null, true);
 
 		log_message('debug', 'Template Class Initialized');
 	}
@@ -159,7 +159,7 @@ class Template {
 	 * @param 	mixed 	$value 	property's value
 	 * @return 	void
 	 */
-	public function __set($name, $value = NULL)
+	public function __set($name, $value = null)
 	{
 		$this->{$name} = $value;
 	}
@@ -171,7 +171,7 @@ class Template {
 	 */
 	public function __get($name)
 	{
-		return isset($this->{$name}) ? $this->{$name} : NULL;
+		return isset($this->{$name}) ? $this->{$name} : null;
 	}
 
 	// ------------------------------------------------------------------------
@@ -210,7 +210,7 @@ class Template {
 	 * @param 	string 	$name 	in case of a distinct partial name
 	 * @return 	object
 	 */
-	public function add_partial($view, $data = array(), $name = NULL)
+	public function add_partial($view, $data = array(), $name = null)
 	{
 		$name OR $name = $view;
 		$this->partials[$name] = array('view' => $view, 'data' => $data);
@@ -224,7 +224,7 @@ class Template {
 	 * @param 	boolean 	$return return or echo
 	 * @return 	void
 	 */
-	public function load_partial($view, $data = array(), $return = FALSE)
+	public function load_partial($view, $data = array(), $return = false)
 	{
 		return $this->CI->load->view('partials/'.$view, $data, $return);
 	}
@@ -239,8 +239,8 @@ class Template {
 	 */
 	public function set_title($title = '')
 	{
-		$_title = empty($this->title) 
-					? config('site.name', 'CodeIgniter') 
+		$_title = empty($this->title)
+					? config('app.name', 'CodeIgniter')
 					: $this->title;
 
 		if ( ! empty($title)) {
@@ -261,7 +261,7 @@ class Template {
 	{
 		if (empty($description)) {
 			$this->description = empty($this->description)
-								? config('site.description', 'CodeIgniter Application')
+								? config('app.description', 'CodeIgniter Application')
 								: $this->description;
 		}
 		else {
@@ -279,7 +279,7 @@ class Template {
 	public function set_keywords($keywords = '')
 	{
 		if (empty($keywords)) {
-			$this->keywords = config('site.keywords');
+			$this->keywords = config('app.keywords');
 		}
 		else {
 			$this->keywords = $keywords;
@@ -296,9 +296,9 @@ class Template {
 	 * @param 	string 	$folder 	in case of distinct folder
 	 * @return 	string
 	 */
-	public function assets_url($uri = '', $folder = NULL)
+	public function assets_url($uri = '', $folder = null)
 	{
-		if (filter_var($uri, FILTER_VALIDATE_URL) !== FALSE) {
+		if (filter_var($uri, FILTER_VALIDATE_URL) !== false) {
 			return $uri;
 		}
 
@@ -314,9 +314,9 @@ class Template {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	public function css_url($file, $folder = NULL)
+	public function css_url($file, $folder = null)
 	{
-		if (filter_var($file, FILTER_VALIDATE_URL) !== FALSE) {
+		if (filter_var($file, FILTER_VALIDATE_URL) !== false) {
 			return $file;
 		}
 		$folder OR $folder = 'assets/css';
@@ -331,9 +331,9 @@ class Template {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	public function js_url($file, $folder = NULL)
+	public function js_url($file, $folder = null)
 	{
-		if (filter_var($file, FILTER_VALIDATE_URL) !== FALSE) {
+		if (filter_var($file, FILTER_VALIDATE_URL) !== false) {
 			return $file;
 		}
 		$folder OR $folder = 'assets/js';
@@ -348,7 +348,7 @@ class Template {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	public function img_url($file, $folder = NULL)
+	public function img_url($file, $folder = null)
 	{
 		$folder OR $folder = 'assets/img';
 		return $this->assets_url($file, $folder);
@@ -389,7 +389,7 @@ class Template {
 	 * @param 	mixed 	$content
 	 * @return 	object
 	 */
-    public function add_meta($name, $content = NULL)
+    public function add_meta($name, $content = null)
     {
     	// In case of multiple elements
     	if (is_array($name)) {
@@ -414,10 +414,10 @@ class Template {
      * @param 	mixed 	$attrs 	string or array of attributes
      * @return 	string
      */
-	public function css($file, $cdn = NULL, $attrs = '')
+	public function css($file, $cdn = null, $attrs = '')
 	{
-        $folder = NULL;
-		if (config('use.cdn') === TRUE) {
+        $folder = null;
+		if (config('cdn.enabled') === true && $cdn !== null) {
 			$file = $cdn;
 		}
 		else {
@@ -445,10 +445,10 @@ class Template {
      * @param 	mixed 	$attrs 	string or array of attributes
      * @return 	string
      */
-	public function js($file, $cdn = NULL, $attrs = '')
+	public function js($file, $cdn = null, $attrs = '')
 	{
-        $folder = NULL;
-		if (config('use.cdn') === TRUE) {
+        $folder = null;
+		if (config('cdn.enabled') === true && $cdn !== null) {
 			$file = $cdn;
 		}
 		else {
@@ -475,7 +475,7 @@ class Template {
 	 * @param 	string 	$folder in case of a distinct folder
 	 * @return 	string
 	 */
-	public function img($file, $attrs = '', $folder = NULL)
+	public function img($file, $attrs = '', $folder = null)
 	{
     	$args = explode('|', $file);
     	if (count($args) == 2) {
@@ -492,10 +492,10 @@ class Template {
      * Display a HTML meta tag
      * @access 	public
      * @param   mixed   $name   string or associative array
-     * @param   string  $value  value or NULL if $name is array
+     * @param   string  $value  value or null if $name is array
      * @return  string
      */
-    public function meta($name, $content = NULL)
+    public function meta($name, $content = null)
     {
         // Loop through multiple meta tags
         if (is_array($name)) {
@@ -511,7 +511,7 @@ class Template {
 		$name    = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
 		$content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
 
-        return (strpos($name, 'og:') !== FALSE)
+        return (strpos($name, 'og:') !== false)
                 ? '<meta property="'.$name.'" content="'.$content.'">'."\n"
                 : '<meta name="'.$name.'" content="'.$content.'">'."\n";
     }
@@ -525,14 +525,14 @@ class Template {
      * @param 	bool 	$global 	whether to make it global or not
      * @return 	object
      */
-    public function set($name, $value = NULL, $global = FALSE)
+    public function set($name, $value = null, $global = false)
     {
     	if (is_array($name)) {
     		foreach ($name as $key => $val) {
     			$this->set($key, $val, $global);
     		}
     	}
-    	elseif ($global === TRUE) {
+    	elseif ($global === true) {
     		$this->CI->load->vars($name, $value);
     	}
     	else {
@@ -551,7 +551,7 @@ class Template {
 	 * @param  boolean $return return or output
 	 * @return mixed
 	 */
-	public function load($view, $data = array(), $return = FALSE)
+	public function load($view, $data = array(), $return = false)
 	{
 		$this->view = $view;
 		$this->data = array_merge($this->data, $data);
@@ -570,7 +570,7 @@ class Template {
 	 */
 	public function build($view, $data = array())
 	{
-		return $this->load($view, $data, TRUE);
+		return $this->load($view, $data, true);
 	}
 
 	/**
@@ -581,7 +581,7 @@ class Template {
 	 */
 	public function render($view, $data = array())
 	{
-		return $this->load($view, $data, FALSE);
+		return $this->load($view, $data, false);
 	}
 
 	// ------------------------------------------------------------------------
@@ -594,13 +594,13 @@ class Template {
      */
 	protected function _prepare_output()
 	{
-		$title = config('site.name', 'CodeIgniter');
+		$title = config('app.name', 'CodeIgniter');
 		empty($this->title) OR $title = $this->title;
 
-		$description = config('site.description', 'CodeIgniter 3.1.3 Application');
+		$description = config('app.description', 'CodeIgniter 3.1.3 Application');
 		empty($this->description) OR $description = $this->description;
 
-		$keywords = config('site.keywords', 'codeigniter, framework, bkader');
+		$keywords = config('app.keywords', 'codeigniter, framework, bkader');
 		empty($this->keywords) OR $keywords = $this->keywords;
 
 		$metadata = '';
@@ -641,22 +641,22 @@ class Template {
 		$layout = array();
 
 		// Load header & footer files
-		$layout['header'] = $this->load_partial('header', array(), TRUE);
-		$layout['footer'] = $this->load_partial('footer', array(), TRUE);
-		
+		$layout['header'] = $this->load_partial('header', array(), true);
+		$layout['footer'] = $this->load_partial('footer', array(), true);
+
 		// Prepare page content
-		$layout['content'] = $this->CI->load->view($this->view, $this->data, TRUE);
+		$layout['content'] = $this->CI->load->view($this->view, $this->data, true);
 
 		// Check there are any requested partial views
 		if ( ! empty($this->partials)) {
 			foreach ($this->partials as $name => $partial) {
-				$layout[$name] = $this->load_partial($partial['view'], $partial['data'], TRUE);
+				$layout[$name] = $this->load_partial($partial['view'], $partial['data'], true);
 			}
 		}
 
-		$template['layout'] = $this->CI->load->view('layouts/'.$this->layout, $layout, TRUE);
+		$template['layout'] = $this->CI->load->view('layouts/'.$this->layout, $layout, true);
 
-		return $this->CI->load->view($this->master, $template, TRUE);
+		return $this->CI->load->view($this->master, $template, true);
 	}
 
 	/**

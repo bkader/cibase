@@ -8,7 +8,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="<?php echo @$site_url; ?>"><?php echo @$site_name; ?></a>
+			<a class="navbar-brand" href="<?=@$site_url?>"><?=@$site_name?></a>
 		</div><!--/.navbar-header-->
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -16,17 +16,7 @@
 			<ul class="nav navbar-nav">
 				<li><a href="https://goo.gl/fZ5P94" target="_blank">GitHub</a></li>
 				<li><a href="http://www.codeigniter.com/" target="_blank">CodeIgniter</a></li>
-				<li><?php echo anchor('example', 'Example'); ?></li>
-			</ul><!--/.nav-->
-
-			<form action="<?php echo site_url('example'); ?>" class="navbar-form navbar-left" role="search" method="get">
-				<div class="form-group">
-					<input type="text" name="name" class="form-control" placeholder="Search">
-				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
-			</form><!--/.navbar-form-->
-
-			<ul class="nav navbar-nav navbar-right">
+				<li><?=anchor('example', 'Example')?></li>
 				<li><a href="https://goo.gl/wGXHO9" target="_blank">@kader</a></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">My Other Repos <b class="caret"></b></a>
@@ -39,6 +29,17 @@
 					</ul>
 				</li>
 			</ul><!--/.nav-->
+
+			<form action="<?php echo site_url('example'); ?>" class="navbar-form navbar-left" role="search" method="get">
+				<div class="form-group">
+					<input type="text" name="name" class="form-control" placeholder="Search">
+				</div><!--/.form-group-->
+			</form><!--/.navbar-form-->
+
+			<div class="navbar-right">
+				<?=anchor('login', __('ui.login', null, 'Login'), 'class="btn btn-default navbar-btn"')?>
+				<?=anchor('register', __('ui.create_account', null, 'Crete Account'), 'class="btn btn-primary navbar-btn"')?>
+			</div><!--/.navbar-right-->
 		</div><!-- /.navbar-collapse -->
 	</div><!--/.container-->
 </nav><!--/.navbar-->

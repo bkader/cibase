@@ -144,13 +144,13 @@ if ( ! function_exists('reduce_multiples'))
 	 *
 	 * @param	string
 	 * @param	string	the character you wish to reduce
-	 * @param	bool	TRUE/FALSE - whether to trim the character from the beginning/end
+	 * @param	bool	true/false - whether to trim the character from the beginning/end
 	 * @return	string
 	 */
-	function reduce_multiples($str, $character = ',', $trim = FALSE)
+	function reduce_multiples($str, $character = ',', $trim = false)
 	{
 		$str = preg_replace('#'.preg_quote($character, '#').'{2,}#', $character, $str);
-		return ($trim === TRUE) ? trim($str, $character) : $str;
+		return ($trim === true) ? trim($str, $character) : $str;
 	}
 }
 
@@ -198,7 +198,7 @@ if ( ! function_exists('random_string'))
 				return md5(uniqid(mt_rand()));
 			case 'encrypt': // todo: remove in 3.1+
 			case 'sha1':
-				return sha1(uniqid(mt_rand(), TRUE));
+				return sha1(uniqid(mt_rand(), true));
 		}
 	}
 }
@@ -218,7 +218,7 @@ if ( ! function_exists('readable_random_string'))
      * @link 	https://github.com/bkader
      * @link 	https://twitter.com/KaderBouyakoub
      */
-    function readable_random_string($length = 6, $camelize = FALSE)
+    function readable_random_string($length = 6, $camelize = false)
     {
         $conso  = array("b","c","d","f","g","h","j","k","l","m","n","p","r","s","t","v","w","x","y","z");
         $vocal  = array("a","e","i","o","u");
@@ -319,7 +319,7 @@ if ( ! function_exists('mask_string'))
      * @link 	https://github.com/bkader
      * @link 	https://twitter.com/KaderBouyakoub
      */
-    function mask_string($str = NULL, $start = 3, $end = 3, $mask = '*')
+    function mask_string($str = null, $start = 3, $end = 3, $mask = '*')
     {
         // Prepare the length of the string
         $length = strlen($str);

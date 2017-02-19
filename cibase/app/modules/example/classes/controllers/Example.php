@@ -35,7 +35,7 @@ class Example extends Public_Controller
 		// Prepare the name
 		$name = $this->uri->segment(2);
 		$name == 'index' && $name = $this->uri->segment(3);
-		$name OR $name = $this->input->get('name', TRUE);
+		$name OR $name = $this->input->get('name', true);
 		$name OR $name = 'World';
 
 		// Pass name
@@ -66,15 +66,15 @@ class Example extends Public_Controller
 		// arguments. But, for the sake of this example, I am keeping the
 		// output to show you the utility of the after() method below.
 
-		$this->content = $this->template->load('example_view', $this->data, TRUE);
+		$this->content = $this->template->load('example_view', $this->data, true);
 
 		// You should simply use:
-		// $this->template->load('example_view', $this->data, TRUE);
+		// $this->template->load('example_view', $this->data, true);
 	}
 
 	protected function load_sidebar()
 	{
-		return $this->template->load_partial('login', array(), TRUE);
+		return $this->template->load_partial('login', array(), true);
 	}
 
 	/**

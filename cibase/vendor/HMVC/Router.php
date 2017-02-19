@@ -1,4 +1,3 @@
-
 <?php
 /**
  * @name		CodeIgniter HMVC Modules
@@ -50,7 +49,7 @@ class HMVC_Router extends CI_Router
 	 * @var 	string
 	 * @access 	public
 	 */
-	public $module_path = NULL;
+	public $module_path = null;
 
 	/**
 	 * Constructor
@@ -159,7 +158,7 @@ class HMVC_Router extends CI_Router
 	 */
 	public function locate($segments)
 	{
-		list($module, $directory, $controller) = array_pad($segments, 3, NULL);
+		list($module, $directory, $controller) = array_pad($segments, 3, null);
 		foreach($this->config->item('modules_locations') as $location)
 		{
 			$relative = $location;

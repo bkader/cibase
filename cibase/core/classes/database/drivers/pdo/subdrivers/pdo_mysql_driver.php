@@ -28,7 +28,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 *
 	 * @var	bool
 	 */
-	public $compress = FALSE;
+	public $compress = false;
 
 	/**
 	 * Strict ON flag
@@ -70,7 +70,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 			empty($this->database) OR $this->dsn .= ';dbname='.$this->database;
 			empty($this->char_set) OR $this->dsn .= ';charset='.$this->char_set;
 		}
-		elseif ( ! empty($this->char_set) && strpos($this->dsn, 'charset=', 6) === FALSE)
+		elseif ( ! empty($this->char_set) && strpos($this->dsn, 'charset=', 6) === false)
 		{
 			$this->dsn .= ';charset='.$this->char_set;
 		}
@@ -84,7 +84,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 * @param	bool	$persistent
 	 * @return	object
 	 */
-	public function db_connect($persistent = FALSE)
+	public function db_connect($persistent = false)
 	{
 		if (isset($this->stricton))
 		{
@@ -117,9 +117,9 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 			}
 		}
 
-		if ($this->compress === TRUE)
+		if ($this->compress === true)
 		{
-			$this->options[PDO::MYSQL_ATTR_COMPRESS] = TRUE;
+			$this->options[PDO::MYSQL_ATTR_COMPRESS] = true;
 		}
 
 		if (is_array($this->encrypt))
@@ -138,7 +138,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 
 		// Prior to version 5.7.3, MySQL silently downgrades to an unencrypted connection if SSL setup fails
 		if (
-			($pdo = parent::db_connect($persistent)) !== FALSE
+			($pdo = parent::db_connect($persistent)) !== false
 			&& ! empty($ssl)
 			&& version_compare($pdo->getAttribute(PDO::ATTR_CLIENT_VERSION), '5.7.3', '<=')
 			&& empty($pdo->query("SHOW STATUS LIKE 'ssl_cipher'")->fetchObject()->Value)
@@ -146,7 +146,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 		{
 			$message = 'PDO_MYSQL was configured for an SSL connection, but got an unencrypted connection instead!';
 			log_message('error', $message);
-			return ($this->db->db_debug) ? $this->db->display_error($message, '', TRUE) : FALSE;
+			return ($this->db->db_debug) ? $this->db->display_error($message, '', true) : false;
 		}
 
 		return $pdo;
@@ -167,14 +167,14 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 			$database = $this->database;
 		}
 
-		if (FALSE !== $this->simple_query('USE '.$this->escape_identifiers($database)))
+		if (false !== $this->simple_query('USE '.$this->escape_identifiers($database)))
 		{
 			$this->database = $database;
 			$this->data_cache = array();
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -186,7 +186,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _trans_begin()
 	{
-		$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, FALSE);
+		$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 		return $this->conn_id->beginTransaction();
 	}
 
@@ -201,11 +201,11 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	{
 		if ($this->conn_id->commit())
 		{
-			$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
-			return TRUE;
+			$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -219,11 +219,11 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	{
 		if ($this->conn_id->rollBack())
 		{
-			$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
-			return TRUE;
+			$this->conn_id->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -236,11 +236,11 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 * @param	bool	$prefix_limit
 	 * @return	string
 	 */
-	protected function _list_tables($prefix_limit = FALSE)
+	protected function _list_tables($prefix_limit = false)
 	{
 		$sql = 'SHOW TABLES';
 
-		if ($prefix_limit === TRUE && $this->dbprefix !== '')
+		if ($prefix_limit === true && $this->dbprefix !== '')
 		{
 			return $sql." LIKE '".$this->escape_like_str($this->dbprefix)."%'";
 		}
@@ -260,7 +260,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _list_columns($table = '')
 	{
-		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE);
+		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false);
 	}
 
 	// --------------------------------------------------------------------
@@ -273,9 +273,9 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 	 */
 	public function field_data($table)
 	{
-		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE))) === FALSE)
+		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false))) === false)
 		{
-			return FALSE;
+			return false;
 		}
 		$query = $query->result_object();
 

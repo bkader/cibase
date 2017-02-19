@@ -22,7 +22,7 @@ if ( ! function_exists('xss_clean'))
 	 * @param	bool	whether or not the content is an image file
 	 * @return	string
 	 */
-	function xss_clean($str, $is_image = FALSE)
+	function xss_clean($str, $is_image = false)
 	{
 		return get_instance()->security->xss_clean($str, $is_image);
 	}
@@ -142,10 +142,10 @@ if ( ! function_exists('generate_safe_token'))
      * @link 	https://github.com/bkader
      * @link 	https://twitter.com/KaderBouyakoub
      */
-    function generate_safe_token($time = FALSE, $sha1 = FALSE)
+    function generate_safe_token($time = false, $sha1 = false)
     {
     	$time OR $time = time();
     	$str = $time.config_item('encryption_key').session_id();
-    	return ($sha1 === TRUE) ? sha1($str) : md5($str);
+    	return ($sha1 === true) ? sha1($str) : md5($str);
     }
 }

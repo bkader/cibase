@@ -69,7 +69,7 @@ class CI_Profiler {
 		{
 			if ( ! isset($config[$section]))
 			{
-				$this->_compile_{$section} = TRUE;
+				$this->_compile_{$section} = true;
 			}
 		}
 
@@ -99,7 +99,7 @@ class CI_Profiler {
 		{
 			if (in_array($method, $this->_available_sections))
 			{
-				$this->_compile_{$method} = ($enable !== FALSE);
+				$this->_compile_{$method} = ($enable !== false);
 			}
 		}
 	}
@@ -280,7 +280,7 @@ class CI_Profiler {
 			{
 				is_int($key) OR $key = "'".htmlspecialchars($key, ENT_QUOTES, config_item('charset'))."'";
 				$val = (is_array($val) OR is_object($val))
-					? '<pre>'.htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset'))
+					? '<pre>'.htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset'))
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;color:#000;background-color:#ddd;padding:5px;">&#36;_GET['
@@ -320,7 +320,7 @@ class CI_Profiler {
 			{
 				is_int($key) OR $key = "'".htmlspecialchars($key, ENT_QUOTES, config_item('charset'))."'";
 				$val = (is_array($val) OR is_object($val))
-					? '<pre>'.htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset'))
+					? '<pre>'.htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset'))
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;padding:5px;color:#000;background-color:#ddd;">&#36;_POST['
@@ -332,7 +332,7 @@ class CI_Profiler {
 			{
 				is_int($key) OR $key = "'".htmlspecialchars($key, ENT_QUOTES, config_item('charset'))."'";
 				$val = (is_array($val) OR is_object($val))
-					? '<pre>'.htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset'))
+					? '<pre>'.htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset'))
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;padding:5px;color:#000;background-color:#ddd;">&#36;_FILES['
@@ -450,7 +450,7 @@ class CI_Profiler {
 		{
 			if (is_array($val) OR is_object($val))
 			{
-				$val = print_r($val, TRUE);
+				$val = print_r($val, true);
 			}
 
 			$output .= '<tr><td style="padding:5px;vertical-align:top;color:#900;background-color:#ddd;">'
@@ -482,7 +482,7 @@ class CI_Profiler {
 		{
 			if (is_array($val) OR is_object($val))
 			{
-				$val = print_r($val, TRUE);
+				$val = print_r($val, true);
 			}
 
 			$output .= '<tr><td style="padding:5px;vertical-align:top;color:#900;background-color:#ddd;">'
@@ -506,7 +506,7 @@ class CI_Profiler {
 
 		foreach ($this->_available_sections as $section)
 		{
-			if ($this->_compile_{$section} !== FALSE)
+			if ($this->_compile_{$section} !== false)
 			{
 				$func = '_compile_'.$section;
 				$output .= $this->{$func}();

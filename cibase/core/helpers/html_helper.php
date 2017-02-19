@@ -139,7 +139,7 @@ if ( ! function_exists('img'))
 	 * @param	mixed
 	 * @return	string
 	 */
-	function img($src = '', $index_page = FALSE, $attributes = '')
+	function img($src = '', $index_page = false, $attributes = '')
 	{
 		if ( ! is_array($src) )
 		{
@@ -158,7 +158,7 @@ if ( ! function_exists('img'))
 		{
 			if ($k === 'src' && ! preg_match('#^([a-z]+:)?//#i', $v))
 			{
-				if ($index_page === TRUE)
+				if ($index_page === true)
 				{
 					$img .= ' src="'.get_instance()->config->site_url($v).'"';
 				}
@@ -212,13 +212,13 @@ if ( ! function_exists('doctype'))
 			if (empty($_doctypes) OR ! is_array($_doctypes))
 			{
 				$doctypes = array();
-				return FALSE;
+				return false;
 			}
 
 			$doctypes = $_doctypes;
 		}
 
-		return isset($doctypes[$type]) ? $doctypes[$type] : FALSE;
+		return isset($doctypes[$type]) ? $doctypes[$type] : false;
 	}
 }
 
@@ -239,7 +239,7 @@ if ( ! function_exists('link_tag'))
 	 * @param	bool	should index_page be added to the css path
 	 * @return	string
 	 */
-	function link_tag($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = FALSE)
+	function link_tag($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false)
 	{
 		$CI =& get_instance();
 		$link = '<link ';
@@ -250,7 +250,7 @@ if ( ! function_exists('link_tag'))
 			{
 				if ($k === 'href' && ! preg_match('#^([a-z]+:)?//#i', $v))
 				{
-					if ($index_page === TRUE)
+					if ($index_page === true)
 					{
 						$link .= 'href="'.$CI->config->site_url($v).'" ';
 					}
@@ -271,7 +271,7 @@ if ( ! function_exists('link_tag'))
 			{
 				$link .= 'href="'.$href.'" ';
 			}
-			elseif ($index_page === TRUE)
+			elseif ($index_page === true)
 			{
 				$link .= 'href="'.$CI->config->site_url($href).'" ';
 			}

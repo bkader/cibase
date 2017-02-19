@@ -1,40 +1,5 @@
 <?php
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	CodeIgniter
- * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://codeigniter.com
- * @since	Version 1.0.0
- * @filesource
- */
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -64,7 +29,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 *
 	 * @var	bool
 	 */
-	public $compress = FALSE;
+	public $compress = false;
 
 	/**
 	 * DELETE hack flag
@@ -75,7 +40,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 *
 	 * @var	bool
 	 */
-	public $delete_hack = TRUE;
+	public $delete_hack = true;
 
 	/**
 	 * Strict ON flag
@@ -121,19 +86,19 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	$persistent
 	 * @return	resource
 	 */
-	public function db_connect($persistent = FALSE)
+	public function db_connect($persistent = false)
 	{
-		$client_flags = ($this->compress === FALSE) ? 0 : MYSQL_CLIENT_COMPRESS;
+		$client_flags = ($this->compress === false) ? 0 : MYSQL_CLIENT_COMPRESS;
 
-		if ($this->encrypt === TRUE)
+		if ($this->encrypt === true)
 		{
 			$client_flags = $client_flags | MYSQL_CLIENT_SSL;
 		}
 
 		// Error suppression is necessary mostly due to PHP 5.5+ issuing E_DEPRECATED messages
-		$this->conn_id = ($persistent === TRUE)
+		$this->conn_id = ($persistent === true)
 			? mysql_pconnect($this->hostname, $this->username, $this->password, $client_flags)
-			: mysql_connect($this->hostname, $this->username, $this->password, TRUE, $client_flags);
+			: mysql_connect($this->hostname, $this->username, $this->password, true, $client_flags);
 
 		// ----------------------------------------------------------------
 
@@ -142,9 +107,9 @@ class CI_DB_mysql_driver extends CI_DB {
 		{
 			log_message('error', 'Unable to select database: '.$this->database);
 
-			return ($this->db_debug === TRUE)
+			return ($this->db_debug === true)
 				? $this->display_error('db_unable_to_select', $this->database)
-				: FALSE;
+				: false;
 		}
 
 		if (isset($this->stricton) && is_resource($this->conn_id))
@@ -184,9 +149,9 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	public function reconnect()
 	{
-		if (mysql_ping($this->conn_id) === FALSE)
+		if (mysql_ping($this->conn_id) === false)
 		{
-			$this->conn_id = FALSE;
+			$this->conn_id = false;
 		}
 	}
 
@@ -209,10 +174,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		{
 			$this->database = $database;
 			$this->data_cache = array();
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -242,9 +207,9 @@ class CI_DB_mysql_driver extends CI_DB {
 			return $this->data_cache['version'];
 		}
 
-		if ( ! $this->conn_id OR ($version = mysql_get_server_info($this->conn_id)) === FALSE)
+		if ( ! $this->conn_id OR ($version = mysql_get_server_info($this->conn_id)) === false)
 		{
-			return FALSE;
+			return false;
 		}
 
 		return $this->data_cache['version'] = $version;
@@ -277,7 +242,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	{
 		// mysql_affected_rows() returns 0 for "DELETE FROM TABLE" queries. This hack
 		// modifies the query so that it a proper number of affected rows is returned.
-		if ($this->delete_hack === TRUE && preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql))
+		if ($this->delete_hack === true && preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql))
 		{
 			return trim($sql).' WHERE 1=1';
 		}
@@ -310,10 +275,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		if ($this->simple_query('COMMIT'))
 		{
 			$this->simple_query('SET AUTOCOMMIT=1');
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -328,10 +293,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		if ($this->simple_query('ROLLBACK'))
 		{
 			$this->simple_query('SET AUTOCOMMIT=1');
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -381,11 +346,11 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	$prefix_limit
 	 * @return	string
 	 */
-	protected function _list_tables($prefix_limit = FALSE)
+	protected function _list_tables($prefix_limit = false)
 	{
 		$sql = 'SHOW TABLES FROM '.$this->escape_identifiers($this->database);
 
-		if ($prefix_limit !== FALSE && $this->dbprefix !== '')
+		if ($prefix_limit !== false && $this->dbprefix !== '')
 		{
 			return $sql." LIKE '".$this->escape_like_str($this->dbprefix)."%'";
 		}
@@ -405,7 +370,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	protected function _list_columns($table = '')
 	{
-		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE);
+		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false);
 	}
 
 	// --------------------------------------------------------------------
@@ -418,9 +383,9 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	public function field_data($table)
 	{
-		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE))) === FALSE)
+		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false))) === false)
 		{
-			return FALSE;
+			return false;
 		}
 		$query = $query->result_object();
 

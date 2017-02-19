@@ -139,7 +139,7 @@ class CI_Security {
 			// CSRF config
 			foreach (array('csrf_expire', 'csrf_token_name', 'csrf_cookie_name') as $key)
 			{
-				if (NULL !== ($val = config_item($key)))
+				if (null !== ($val = config_item($key)))
 				{
 					$this->{'_'.$key} = $val;
 				}
@@ -200,13 +200,13 @@ class CI_Security {
 		{
 			// Nothing should last forever
 			unset($_COOKIE[$this->_csrf_cookie_name]);
-			$this->_csrf_hash = NULL;
+			$this->_csrf_hash = null;
 		}
 
 		$this->_csrf_set_hash();
 		$this->csrf_set_cookie();
 
-		if ($valid !== TRUE)
+		if ($valid !== true)
 		{
 			$this->csrf_show_error();
 		}
@@ -230,7 +230,7 @@ class CI_Security {
 
 		if ($secure_cookie && ! is_https())
 		{
-			return FALSE;
+			return false;
 		}
 
 		setcookie(
@@ -313,7 +313,7 @@ class CI_Security {
 	 * @param 	bool		$is_image	Whether the input is an image
 	 * @return	string
 	 */
-	public function xss_clean($str, $is_image = FALSE)
+	public function xss_clean($str, $is_image = false)
 	{
 		// Is the string an array?
 		if (is_array($str))
@@ -388,7 +388,7 @@ class CI_Security {
 		 *
 		 * But it doesn't seem to pose a problem.
 		 */
-		if ($is_image === TRUE)
+		if ($is_image === true)
 		{
 			// Images have a tendency to have the PHP short opening and
 			// closing tags every so often so we skip those and only
@@ -515,12 +515,12 @@ class CI_Security {
 		 * Images are Handled in a Special Way
 		 * - Essentially, we want to know that after all of the character
 		 * conversion is done whether any unwanted, likely XSS, code was found.
-		 * If not, we return TRUE, as the image is clean.
+		 * If not, we return true, as the image is clean.
 		 * However, if the string post-conversion does not matched the
 		 * string post-removal of XSS, then it fails, as there was unwanted XSS
 		 * code found and removed/changed during processing.
 		 */
-		if ($is_image === TRUE)
+		if ($is_image === true)
 		{
 			return ($str === $converted_string);
 		}
@@ -540,11 +540,11 @@ class CI_Security {
 	 */
 	public function xss_hash()
 	{
-		if ($this->_xss_hash === NULL)
+		if ($this->_xss_hash === null)
 		{
 			$rand = $this->get_random_bytes(16);
-			$this->_xss_hash = ($rand === FALSE)
-				? md5(uniqid(mt_rand(), TRUE))
+			$this->_xss_hash = ($rand === false)
+				? md5(uniqid(mt_rand(), true))
 				: bin2hex($rand);
 		}
 
@@ -563,7 +563,7 @@ class CI_Security {
 	{
 		if (empty($length) OR ! ctype_digit((string) $length))
 		{
-			return FALSE;
+			return false;
 		}
 
 		if (function_exists('random_bytes'))
@@ -578,24 +578,24 @@ class CI_Security {
 				// If random_bytes() can't do the job, we can't either ...
 				// There's no point in using fallbacks.
 				log_message('error', $e->getMessage());
-				return FALSE;
+				return false;
 			}
 		}
 
 		// Unfortunately, none of the following PRNGs is guaranteed to exist ...
-		if (defined('MCRYPT_DEV_URANDOM') && ($output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM)) !== FALSE)
+		if (defined('MCRYPT_DEV_URANDOM') && ($output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM)) !== false)
 		{
 			return $output;
 		}
 
 
-		if (is_readable('/dev/urandom') && ($fp = fopen('/dev/urandom', 'rb')) !== FALSE)
+		if (is_readable('/dev/urandom') && ($fp = fopen('/dev/urandom', 'rb')) !== false)
 		{
 			// Try not to waste entropy ...
 			is_php('5.4') && stream_set_chunk_size($fp, $length);
 			$output = fread($fp, $length);
 			fclose($fp);
-			if ($output !== FALSE)
+			if ($output !== false)
 			{
 				return $output;
 			}
@@ -606,7 +606,7 @@ class CI_Security {
 			return openssl_random_pseudo_bytes($length);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -628,9 +628,9 @@ class CI_Security {
 	 * @param	string	$charset	Character set
 	 * @return	string
 	 */
-	public function entity_decode($str, $charset = NULL)
+	public function entity_decode($str, $charset = null)
 	{
-		if (strpos($str, '&') === FALSE)
+		if (strpos($str, '&') === false)
 		{
 			return $str;
 		}
@@ -669,7 +669,7 @@ class CI_Security {
 				$matches = array_unique(array_map('strtolower', $matches[0]));
 				foreach ($matches as &$match)
 				{
-					if (($char = array_search($match.';', $_entities, TRUE)) !== FALSE)
+					if (($char = array_search($match.';', $_entities, true)) !== false)
 					{
 						$replace[$match] = $char;
 					}
@@ -703,7 +703,7 @@ class CI_Security {
 	 * @param 	bool	$relative_path	Whether to preserve paths
 	 * @return	string
 	 */
-	public function sanitize_filename($str, $relative_path = FALSE)
+	public function sanitize_filename($str, $relative_path = false)
 	{
 		$bad = $this->filename_bad_chars;
 
@@ -713,7 +713,7 @@ class CI_Security {
 			$bad[] = '/';
 		}
 
-		$str = remove_invisible_characters($str, FALSE);
+		$str = remove_invisible_characters($str, false);
 
 		do
 		{
@@ -810,7 +810,7 @@ class CI_Security {
 			return '&lt;'.$matches[1];
 		}
 		// Is the element that we caught naughty? If so, escape it
-		elseif (in_array(strtolower($matches['tagName']), $naughty_tags, TRUE))
+		elseif (in_array(strtolower($matches['tagName']), $naughty_tags, true))
 		{
 			return '&lt;'.$matches[1].'&gt;';
 		}
@@ -1020,7 +1020,7 @@ class CI_Security {
 	 */
 	protected function _csrf_set_hash()
 	{
-		if ($this->_csrf_hash === NULL)
+		if ($this->_csrf_hash === null)
 		{
 			// If the cookie exists we will use its value.
 			// We don't necessarily want to regenerate it with
@@ -1033,8 +1033,8 @@ class CI_Security {
 			}
 
 			$rand = $this->get_random_bytes(16);
-			$this->_csrf_hash = ($rand === FALSE)
-				? md5(uniqid(mt_rand(), TRUE))
+			$this->_csrf_hash = ($rand === false)
+				? md5(uniqid(mt_rand(), true))
 				: bin2hex($rand);
 		}
 

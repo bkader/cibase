@@ -98,8 +98,8 @@ class CI_DB_pdo_result extends CI_DB_result {
 				$retval[$i]			= new stdClass();
 				$retval[$i]->name		= $field['name'];
 				$retval[$i]->type		= $field['native_type'];
-				$retval[$i]->max_length		= ($field['len'] > 0) ? $field['len'] : NULL;
-				$retval[$i]->primary_key	= (int) ( ! empty($field['flags']) && in_array('primary_key', $field['flags'], TRUE));
+				$retval[$i]->max_length		= ($field['len'] > 0) ? $field['len'] : null;
+				$retval[$i]->primary_key	= (int) ( ! empty($field['flags']) && in_array('primary_key', $field['flags'], true));
 			}
 
 			return $retval;
@@ -111,7 +111,7 @@ class CI_DB_pdo_result extends CI_DB_result {
 				return $this->db->display_error('db_unsupported_feature');
 			}
 
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -126,7 +126,7 @@ class CI_DB_pdo_result extends CI_DB_result {
 	{
 		if (is_object($this->result_id))
 		{
-			$this->result_id = FALSE;
+			$this->result_id = false;
 		}
 	}
 
