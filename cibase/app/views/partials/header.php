@@ -16,11 +16,12 @@
 			<ul class="nav navbar-nav">
 				<li><a href="https://goo.gl/fZ5P94" target="_blank">GitHub</a></li>
 				<li><a href="http://www.codeigniter.com/" target="_blank">CodeIgniter</a></li>
+				<li><?php echo anchor('example', 'Example'); ?></li>
 			</ul><!--/.nav-->
 
-			<form class="navbar-form navbar-left" role="search">
+			<form action="<?php echo site_url('example'); ?>" class="navbar-form navbar-left" role="search" method="get">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search">
+					<input type="text" name="name" class="form-control" placeholder="Search">
 				</div>
 				<button type="submit" class="btn btn-default">Submit</button>
 			</form><!--/.navbar-form-->

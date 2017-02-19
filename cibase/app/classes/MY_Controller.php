@@ -55,15 +55,22 @@ class MY_Controller extends CI_Controller
 	 */
 	protected $data = array();
 
-	/**
-	 * Constructor
-	 * @param 	none
-	 * @return 	void
-	 */
 	public function __construct()
 	{
 		parent::__construct();
+	}
 
+    // ------------------------------------------------------------------------
+
+	/**
+	 * This method is called before any other methods
+	 * @access 	public
+	 * @param 	none
+	 * @return 	void
+	 */
+
+	public function before()
+	{
 		// Load debug helper when not in production mode
 		(ENVIRONMENT !== 'production') && $this->load->helper('debug');
 
@@ -83,6 +90,8 @@ class MY_Controller extends CI_Controller
 			'site_name' => config('app.name'), // Use @$site_name to avoid errors
 		), NULL, TRUE);
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Auto-load requested files
@@ -215,6 +224,17 @@ class MY_Controller extends CI_Controller
             ));
         }
     }
+
+    // ------------------------------------------------------------------------
+
+	/**
+	 * This method is the last one to be called
+	 * @access 	public
+	 * @param 	none
+	 * @return 	void
+	 */
+    public function after($params = '')
+    {}
 }
 
 // ------------------------------------------------------------------------
@@ -283,10 +303,9 @@ class Ajax_Controller extends Public_Controller
 	 * @param 	none
 	 * @return 	void
 	 */
-	public function __construct()
+	public function before()
 	{
-		parent::__construct();
-
+		parent::before();
 		// Make sure the request is always AJAX
 		if ( ! $this->input->is_ajax_request())
 		{
@@ -316,11 +335,17 @@ class User_Controller extends Public_Controller
 	 * @param 	none
 	 * @return 	void
 	 */
-	public function __construct()
+	public function before()
 	{
-		parent::__construct();
+		parent::before();
 
 		// Login check logic
+		// Make sure the request is always AJAX
+		// if ( ! $this->input->is_ajax_request())
+		// {
+			redirect('login?next='.urlencode($this->uri->uri_string()), 'refresh');
+			// exit;
+		// }
 	}
 }
 
@@ -344,9 +369,9 @@ class Admin_Controller extends User_Controller
 	 * @param 	none
 	 * @return 	void
 	 */
-	public function __construct()
+	public function before()
 	{
-		parent::__construct();
+		parent::before();
 
 		// Access level check.
 	}

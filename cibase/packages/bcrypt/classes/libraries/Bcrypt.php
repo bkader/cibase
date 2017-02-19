@@ -242,8 +242,20 @@ class Bcrypt {
 		return $output;
 	}
 
+	/**
+	 * Hashed a password or a string into an irreversible crypted string
+	 * @access 	public
+	 * @param 	string 	$password 	the password or string to hash
+	 * @return 	string 	the new hashed password.
+	 */
 	public function hash_password($password)
 	{
+		// Use built-in function if it exists.
+		if (function_exists('password_hash'))
+		{
+			return password_hash($password, PASSWORD_BCRYPT);
+		}
+
 		$random = '';
 
 		if (CRYPT_BLOWFISH == 1 && !$this->_portable_hashes) {
@@ -277,12 +289,25 @@ class Bcrypt {
 		return '*';
 	}
 
-	public function check_password($password, $stored_hash)
+	/**
+	 * Compares between a given password or string and a hashed string.
+	 * @access 	public
+	 * @param 	string 	$password 	the known password
+	 * @param 	string 	$Hashed 	the hashed string
+	 * @return 	boolean
+	 */
+	public function check_password($password, $hashed)
 	{
-		$hash = $this->crypt_private($password, $stored_hash);
-		if ($hash[0] == '*')
-			$hash = crypt($password, $stored_hash);
+		// Use built-in function if it exists
+		if (function_exists('password_verify'))
+		{
+			return password_verify($password, $hashed);
+		}
 
-		return $hash == $stored_hash;
+		$hash = $this->crypt_private($password, $hashed);
+		if ($hash[0] == '*')
+			$hash = crypt($password, $hashed);
+
+		return $hash == $hashed;
 	}
 }

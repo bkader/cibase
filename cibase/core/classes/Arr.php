@@ -66,6 +66,8 @@ class CI_Arr {
 		return $array;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Set an array item (dot-notated) to the value.
 	 *
@@ -109,6 +111,8 @@ class CI_Arr {
 		}
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Pluck an array of values from an array.
 	 *
@@ -143,7 +147,7 @@ class CI_Arr {
 		return $return;
 	}
 
-
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Array_key_exists with a dot-notated key from an array.
@@ -186,6 +190,8 @@ class CI_Arr {
 
 		return TRUE;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Unsets dot-notated key from an array
@@ -234,6 +240,8 @@ class CI_Arr {
 		return TRUE;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Converts a multi-dimensional associative array into an array of key => values with the provided field names
 	 *
@@ -261,6 +269,8 @@ class CI_Arr {
 
 		return $output;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Converts an array of key => values into a multi-dimensional associative array with the provided field names
@@ -290,6 +300,8 @@ class CI_Arr {
 		return $output;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Converts the given 1 dimensional non-associative array to an associative
 	 * array.
@@ -318,6 +330,8 @@ class CI_Arr {
 		return array_combine($keys, $vals);
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Checks if the given array is an assoc array.
 	 *
@@ -341,6 +355,8 @@ class CI_Arr {
 		}
 		return FALSE;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Filters an array by an array of keys
@@ -367,6 +383,8 @@ class CI_Arr {
 		return $remove ? $array : $return;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Insert value(s) into an array, mostly an array_splice alias
 	 * WARNING: original array is edited by reference, only boolean success is returned
@@ -388,6 +406,8 @@ class CI_Arr {
 		return TRUE;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Insert value(s) into an array, mostly an array_splice alias
 	 * WARNING: original array is edited by reference, only boolean success is returned
@@ -408,6 +428,8 @@ class CI_Arr {
 
 		return TRUE;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Insert value(s) into an array before a specific key
@@ -431,6 +453,8 @@ class CI_Arr {
 		return $is_assoc ? $this->insert_assoc($original, $value, $pos) : $this->insert($original, $value, $pos);
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Insert value(s) into an array after a specific key
 	 * WARNING: original array is edited by reference, only boolean success is returned
@@ -452,6 +476,8 @@ class CI_Arr {
 
 		return $is_assoc ? $this->insert_assoc($original, $value, $pos + 1) : $this->insert($original, $value, $pos + 1);
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Insert value(s) into an array after a specific value (first found in array)
@@ -475,6 +501,8 @@ class CI_Arr {
 		return $this->insert_after_key($original, $value, $key, $is_assoc);
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Insert value(s) into an array before a specific value (first found in array)
 	 *
@@ -495,6 +523,8 @@ class CI_Arr {
 
 		return $this->insert_before_key($original, $value, $key, $is_assoc);
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Sorts a multi-dimensional array by it's values.
@@ -546,6 +576,8 @@ class CI_Arr {
 		return $c;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Sorts an array on multiple values, with deep sorting support.
 	 *
@@ -581,6 +613,8 @@ class CI_Arr {
 		return $array;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Find the average of an array
 	 *
@@ -597,6 +631,8 @@ class CI_Arr {
 
 		return (array_sum($array) / $count);
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Replaces key names in an array by names in $replace
@@ -634,6 +670,8 @@ class CI_Arr {
 
 		return $result;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Merge 2 arrays recursively, differs in 2 important ways from array_merge_recursive()
@@ -683,6 +721,8 @@ class CI_Arr {
 		return $array;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Merge 2 arrays recursively, differs in 2 important ways from array_merge_recursive()
 	 * - When there's 2 different values && not both arrays, the latter value overwrites the earlier
@@ -725,6 +765,8 @@ class CI_Arr {
 		return $array;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Prepends a value with an associative key to an array.
 	 * Will overwrite if the value exists.
@@ -737,6 +779,8 @@ class CI_Arr {
 	{
 		$arr = (is_array($key) ? $key : array($key => $value)) + $arr;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Recursive in_array
@@ -767,6 +811,8 @@ class CI_Arr {
 		return FALSE;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Checks if the given array is a multidimensional array.
 	 *
@@ -779,6 +825,8 @@ class CI_Arr {
 		$values = array_filter($array, 'is_array');
 		return $all_keys ? count($arr) === count($values) : count($values) > 0;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Searches the array for a given value && returns the
@@ -834,6 +882,8 @@ class CI_Arr {
 		return $key === FALSE ? $default : $key;
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Returns only unique values in an array. It does not sort. First value is used.
 	 *
@@ -864,6 +914,8 @@ class CI_Arr {
 		});
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Calculate the sum of an array
 	 *
@@ -880,6 +932,8 @@ class CI_Arr {
 
 		return array_sum($this->pluck($array, $key));
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Returns the array with all numeric keys re-indexed, && string keys untouched
@@ -899,6 +953,8 @@ class CI_Arr {
 
 		return $arr;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Get the previous value or key from an array using the current array key
@@ -938,6 +994,8 @@ class CI_Arr {
 		return $get_value ? $array[$keys[$index-1]] : $keys[$index-1];
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Get the next value or key from an array using the current array key
 	 *
@@ -975,6 +1033,8 @@ class CI_Arr {
 		// return the value or the key of the array entry the previous key points to
 		return $get_value ? $array[$keys[$index+1]] : $keys[$index+1];
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Get the previous value or key from an array using the current array value
@@ -1014,6 +1074,8 @@ class CI_Arr {
 		return $get_value ? $array[$keys[$index-1]] : $keys[$index-1];
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Get the next value or key from an array using the current array value
 	 *
@@ -1052,6 +1114,8 @@ class CI_Arr {
 		return $get_value ? $array[$keys[$index+1]] : $keys[$index+1];
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Return the subset of the array defined by the supplied keys.
 	 *
@@ -1074,6 +1138,8 @@ class CI_Arr {
 
 		return $result;
 	}
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Takes a value && checks if it is a Closure or not, if it is it

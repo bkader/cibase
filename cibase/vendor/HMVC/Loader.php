@@ -1,38 +1,8 @@
 <?php
-/**
- * @name		CodeIgniter HMVC Modules
- * @author		Jens Segers
- * @link		http://www.jenssegers.be
- * @license		MIT License Copyright (c) 2012 Jens Segers
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @author hArpanet - 23-Jun-2014
- *
- *      Widget() method added to load Widgets for Template library by Jens Segers
- *
- */
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-if (!defined("BASEPATH"))
-    exit("No direct script access allowed");
-
-class HMVC_Loader extends CI_Loader {
+class HMVC_Loader extends CI_Loader
+{
 
     /**
      * List of loaded modules
@@ -55,13 +25,16 @@ class HMVC_Loader extends CI_Loader {
      *
      * Add the current module to all paths permanently
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         // Get current module from the router
-        $router = & $this->_ci_get_component('router');
+        $router =& $this->_ci_get_component('router');
 		$this->module_path = $router->module_path;
-        if ($router->module) {
+
+        if ($router->module)
+        {
             $this->add_module($router->module);
         }
     }
@@ -76,11 +49,13 @@ class HMVC_Loader extends CI_Loader {
      * @param	boolean return the result instead of showing it
      * @return	void
      */
-    public function controller($uri, $params = array(), $return = FALSE) {
+    public function controller($uri, $params = array(), $return = FALSE)
+    {
         // No valid module detected, add current module to uri
         list($module) = $this->detect_module($uri);
-        if (!isset($module)) {
-            $router = & $this->_ci_get_component('router');
+        if ( ! isset($module))
+        {
+            $router =& $this->_ci_get_component('router');
             if ($router->module) {
                 $module = $router->module;
                 $uri = $module.'/'.$uri;
@@ -418,8 +393,9 @@ class HMVC_Loader extends CI_Loader {
      * @param	boolean
      * @return	object
      */
-    private function _load_controller($uri = '', $params = array(), $return = FALSE) {
-        $router = & $this->_ci_get_component('router');
+    private function _load_controller($uri = '', $params = array(), $return = FALSE)
+    {
+        $router =& $this->_ci_get_component('router');
 
         // Back up current router values (before loading new controller)
         $backup = array();
@@ -491,14 +467,17 @@ class HMVC_Loader extends CI_Loader {
      * @param	string
      * @return	array|boolean
      */
-    private function detect_module($class) {
+    private function detect_module($class)
+    {
         $class = str_replace('.php', '', trim($class, '/'));
-        if (($first_slash = strpos($class, '/')) !== FALSE) {
+        if (($first_slash = strpos($class, '/')) !== FALSE)
+        {
             $module = substr($class, 0, $first_slash);
             $class = substr($class, $first_slash + 1);
 
             // Check if module exists
-            if ($this->find_module($module)) {
+            if ($this->find_module($module))
+            {
                 return array($module, $class);
             }
         }
@@ -512,13 +491,17 @@ class HMVC_Loader extends CI_Loader {
      * @param string $module
      * @return string|boolean
      */
-    private function find_module($module) {
-        $config = & $this->_ci_get_component('config');
+    private function find_module($module)
+    {
+        $config =& $this->_ci_get_component('config');
 
         // Check all locations for this module
-        foreach ($config->item('modules_locations') as $location) {
+        foreach ($config->item('modules_locations') as $location)
+        {
             $path = $location.rtrim($module, '/').'/';
-            if (is_dir($path)) {
+
+            if (is_dir($path))
+            {
                 return $path;
             }
         }

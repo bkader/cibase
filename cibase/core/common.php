@@ -523,6 +523,18 @@ if ( ! function_exists('show_error'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('show_exception'))
+{
+	function show_exception($exception)
+	{
+		$_error =& load_class('Exceptions', 'core');
+		$_error->show_exception($exception);
+		exit(4); // EXIT_UNKNOWN_FILE
+	}
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('show_404'))
 {
 	/**

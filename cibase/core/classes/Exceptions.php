@@ -159,6 +159,7 @@ class CI_Exceptions {
 			$templates_path = VIEWPATH.'errors'.DIRECTORY_SEPARATOR;
 		}
 
+		$exception = new Exception($exception);
 		$message = $exception->getMessage();
 		if (empty($message))
 		{
