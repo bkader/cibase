@@ -187,6 +187,8 @@ class CI_Config {
 		return $this->arr->get($this->config, $item, $default);
 	}
 
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Fetch a config file item (Kept for backward compatibility)
 	 *
@@ -198,6 +200,145 @@ class CI_Config {
 	{
 		return $this->get($item, $default);
 	}
+
+	// ------------------------------------------------------------------------
+
+	public function save($file = '', $config = array(), $module = '', $apppath = APPPATH)
+	{
+		if (empty($file) OR empty($config)) {
+			return false;
+		}
+
+		$config_file = "config/{$file}";
+
+        // Look in module first.
+        $found = false;
+        if ($module) {
+        	foreach (config_item('modules_locations') as $location) {
+        		if (file_exists($file = $location.$module.'/'.$config_file.EXT)) {
+        			$found = true;
+        		}
+        	}
+        }
+
+        // Fallback to application folder
+        if ( ! $found) {
+        	$config_file = "{$apppath}{$config_file}";
+        	$found = file_exists($config_file.EXT);
+        }
+
+        // If the file is found, we load its content
+        if ($found) {
+        	$content = file_get_contents($config_file.EXT);
+        	$empty = false;
+        }
+        // If the file was not found, we create it
+        else {
+        	$content = '';
+        	$empty = true;
+        }
+
+        // Loop through config items
+        foreach ($config as $key => $val) {
+        	// Check if the config exists?
+        	$start = strpos($content, '$config[\''.$key.'\']');
+        	$end = strpos($content, ';', $start);
+        	$search = substr($content, $start, $end - $start + 1);
+
+            // Format the value to be written to the file.
+            if (is_array($val)) {
+                // Get the array output.
+                $val = $this->_array_output($val);
+            } elseif (! is_numeric($val)) {
+                $val = "\"$val\"";
+            }
+
+            // For a new file, just append the content. For an existing file, search
+            // the file's content and replace the config setting.
+            //
+            // @todo Don't search new files at the beginning of the loop?
+
+            if ($empty) {
+                $content .= '$config[\''.$key.'\'] = '.$val.";\n";
+            } else {
+                $content = str_replace(
+                    $search,
+                    '$config[\''.$key.'\'] = '.$val.';',
+                    $content
+                );
+            }
+        }
+
+        // Backup the file for safety.
+        $source = $config_file.'.php';
+        $dest = ($module == '' ? "{$apppath}backup/{$file}" : $config_file).'.php.bak';
+
+        if ($empty === false) {
+            copy($source, $dest);
+        }
+
+        // Make sure the file still has the php opening header in it...
+        if (strpos($content, '<?php') === false) {
+            $content = "<?php\ndefined('BASEPATH') OR exit('No direct script access allowed');\n\n".$content;
+        }
+
+        // Write the changes out...
+        if ( ! function_exists('write_file')) {
+            get_instance()->load->helper('file');
+        }
+        $result = write_file("{$config_file}.php", $content);
+
+        return $result !== false;
+	}
+
+	// ------------------------------------------------------------------------
+
+    /**
+     * Output the array string which is then used in the config file.
+     *
+     * @access 	protected
+     * @param 	array 		array 		Values to store in the config.
+     * @param 	integer 	$numtabs 	Optional number of tabs to use in front of array items
+     * @return 	string/boolean 			A string containing the array values in the config file, or false.
+     */
+	protected function _array_output($array, $numtabs = 1)
+	{
+        if ( ! is_array($array)) {
+            return false;
+        }
+
+        $tval = 'array(';
+
+        // Allow for two-dimensional arrays.
+        $arrayKeys = array_keys($array);
+
+        // Check whether they are basic numeric keys.
+        if (is_numeric($arrayKeys[0]) && $arrayKeys[0] == 0) {
+            $tval .= "'".implode("','", $array)."'";
+        } else {
+            // Non-numeric keys.
+            $tabs = "";
+            for ($num = 0; $num < $numtabs; $num++) {
+                $tabs .= "\t";
+            }
+
+            foreach ($array as $key => $value) {
+                $tval .= "\n{$tabs}'{$key}' => ";
+                if (is_array($value)) {
+                    $numtabs++;
+                    $tval .= $this->_array_output($value, $numtabs);
+                } else {
+                    $tval .= "'{$value}'";
+                }
+                $tval .= ',';
+            }
+            $tval .= "\n{$tabs}";
+        }
+
+        $tval .= ')';
+
+        return $tval;
+    }
 
 	// --------------------------------------------------------------------
 
@@ -259,7 +400,7 @@ class CI_Config {
 	/**
 	 * Site URL
 	 *
-	 * Returns base_url . index_page [. uri_string]
+	 * Returns base_url.index_page [. uri_string]
 	 *
 	 * @uses	CI_Config::_uri_string()
 	 *

@@ -2,27 +2,9 @@
 	<div class="col-xs-12 col-sm-1 col-md-4 col-md-offset-4">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<?php echo form_open('register', '', @$hidden); ?>
+				<?php echo form_open('login/reset/'.@$key, '', @$hidden); ?>
 					<fieldset>
-						<legend><?=__('auth.register.heading', null, 'Create Account')?></legend>
-
-						<div class="form-group<?=form_error('email') ? ' has-error': ''?>"><?php echo form_input(array(
-							'type' => 'email',
-							'name' => 'email',
-							'id' => 'email',
-							'class' => 'form-control',
-							'value' => set_value('email'),
-							'placeholder' => __('ui.email', null, 'Email address'),
-						)); ?><small class="help-block"><?=form_error('email')?></small></div><!--/.form-group-->
-
-						<div class="form-group<?=form_error('username') ? ' has-error': ''?>"><?php echo form_input(array(
-							'type' => 'text',
-							'name' => 'username',
-							'id' => 'username',
-							'class' => 'form-control',
-							'value' => set_value('username'),
-							'placeholder' => __('ui.username', null, 'Username'),
-						)); ?><small class="help-block"><?=form_error('username')?></small></div><!--/.form-group-->
+						<legend><?=__('auth.reset.heading', null, 'Reset password')?></legend>
 
 						<div class="form-group<?=form_error('password') ? ' has-error': ''?>"><?php echo form_input(array(
 							'type' => 'password',
@@ -42,9 +24,9 @@
 							'placeholder' => __('ui.confirm_password', null, 'Confirm password'),
 						)); ?><small class="help-block"><?=form_error('cpassword')?></small></div><!--/.form-group-->
 
-						<button class="btn btn-primary pull-right"><?=__('ui.create_account', null, 'Create Account')?></button>
+						<button class="btn btn-primary pull-right"><?=__('ui.reset', null, 'Reset')?></button>
 
-						<?php echo anchor('login', __('ui.login', null, 'Login'), 'class="btn btn-default"'); ?>
+						<?php echo anchor('login', __('ui.cancel', null, 'Cancel'), 'class="btn btn-default"'); ?>
 
 					</fieldset>
 				<?php echo form_close(); ?>

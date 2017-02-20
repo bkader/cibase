@@ -369,6 +369,21 @@ class CI_Form_validation {
 
 	// --------------------------------------------------------------------
 
+    /**
+     * Returns form validation errors in an HTML unordered list.
+     *
+     * @access 	public
+     * @param 	none
+     * @return 	string|bool 	Errors in <ul> or false if no errors.
+     */
+	public function validation_errors_list()
+	{
+		$errors = $this->error_string('<li>', '</li>');
+		return empty($errors) ? false : '<ul>'.PHP_EOL.$errors.'</ul>';
+	}
+
+	// --------------------------------------------------------------------
+
 	/**
 	 * Run the Validator
 	 *

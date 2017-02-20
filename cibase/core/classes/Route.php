@@ -1,11 +1,12 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Route library.
  *
  * Provides enhanced Routing capabilities to CodeIgniter-based applications.
  */
-class Route {
+class Route
+{
 
 	/**
 	 * Our built routes.

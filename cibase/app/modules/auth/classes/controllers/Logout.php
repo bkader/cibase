@@ -1,6 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * Authentication module's logout controller
+ *
+ * This reason we put the logout method as a single controller class is because
+ * of class inheritance. Logout class extends User_Controller which in this
+ * case needs a logged-in user.
+ *
+ * @package 	CodeIgniter
+ * @category 	Modules\Controllers
+ * @author 	Kader Bouyakoub <bkader@mail.com>
+ * @link 	https://github.com/bkader
+ * @link 	https://twitter.com/KaderBouyakoub
+ */
+
 class Logout extends User_Controller
 {
 	protected $autoload = array(
@@ -29,7 +43,14 @@ class Logout extends User_Controller
 	 */
 	public function index()
 	{
-		echo 'Logout';
+		// Put your account logout login below and don't forget to do a redirect.
+
+		// Example:
+		// $this->auth_lib->logout();
+		// redirect('','refresh');
+		// exit;
+
+		echo 'users logout';
 	}
 
 	// ------------------------------------------------------------------------

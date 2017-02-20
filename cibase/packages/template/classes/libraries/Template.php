@@ -553,13 +553,17 @@ class Template {
 	 */
 	public function load($view, $data = array(), $return = false)
 	{
+		$this->CI->benchmark->mark('template_start');
+
 		$this->view = $view;
 		$this->data = array_merge($this->data, $data);
 
 		$output = $this->_prepare_output();
 		$this->compress && $output = $this->_compress_output($output);
 
-		return ($return) ? $output : $this->CI->output->set_output($output);
+		$this->CI->benchmark->mark('template_end');
+
+		return ($return) ? $output : $this->CI->output->append_output($output);
 	}
 
 	/**

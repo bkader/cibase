@@ -278,9 +278,11 @@ if ( ! is_php('5.4'))
 
 /*
  * ------------------------------------------------------
- *  Instantiate the routing class and set the routing
+ * Load Route class, instantiate the routing class and
+ * set the routing
  * ------------------------------------------------------
  */
+	require_once BASEPATH.'classes/Route.php';
 	$RTR =& load_class('Router', 'core', isset($routing) ? $routing : null);
 
 /*

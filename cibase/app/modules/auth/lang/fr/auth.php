@@ -26,29 +26,29 @@ $lang['auth'] = array(
 
 	// Resend activation link
 	'resend' => array(
-		'title' => 'Resend link',
-		'description' => 'Resend account\'s activation link',
-		'heading' => 'Resend activation link'
+		'title' => 'Renvoi du lien',
+		'description' => 'Renvoi du lien d\'activation du compte',
+		'heading' => 'Renvoyer le lien'
 	),
 
 	// Login page
 	'login' => array(
-		'title' => 'Login',
-		'description' => 'Member\'s Login',
-		'heading' => 'Member\'s login'
+		'title' => 'Connexion',
+		'description' => 'Espace membres',
+		'heading' => 'Espace membres'
 	),
 
 	// Lost password page
 	'recover' => array(
-		'title' => 'Lost Password',
-		'description' => 'Recover account\'s lost password',
-		'heading' => 'Recover password'
+		'title' => 'Mot de passe perdu',
+		'description' => 'Récupération du mot de passe',
+		'heading' => 'Récupérer le mot de passe'
 	),
 
 	// Reset password
 	'reset' => array(
-		'title' => 'Reset password',
-		'description' => 'Reset account\'s password',
-		'heading' => 'Change password'
+		'title' => 'Réinitialisation du mot de passe',
+		'description' => 'Réinitialisation du mot de passe du compte',
+		'heading' => 'Changer le mot de passe'
 	),
 );

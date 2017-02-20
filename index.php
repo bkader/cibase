@@ -58,6 +58,11 @@ switch (ENVIRONMENT)
 defined('DS') OR define('DS', DIRECTORY_SEPARATOR);
 
 /**
+ * Define PHP extension
+ */
+defined('EXT') OR define('EXT', '.php');
+
+/**
  * Site public root.
  */
 define('FCPATH', __DIR__.DS);

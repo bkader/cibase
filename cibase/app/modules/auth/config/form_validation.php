@@ -11,7 +11,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link 	https://twitter.com/KaderBouyakoub
  */
 
+// ------------------------------------------------------------------------
 // Registration page
+// ------------------------------------------------------------------------
+
 $config['register'] = array(
 	array(	// Email address
 		'field' => 'email',
@@ -32,5 +35,22 @@ $config['register'] = array(
 		'field' => 'cpassword',
 		'label' => 'lang:ui.confirm_password',
 		'rules' => 'required|matches[password]'
+	),
+);
+
+// ------------------------------------------------------------------------
+// Login page
+// ------------------------------------------------------------------------
+
+$config['login'] = array(
+	array(	// Username or email address
+		'field' => 'login',
+		'label' => 'lang:ui.username_or_email',
+		'rules' => 'required|min_length[5]'
+	),
+	array(	// Password
+		'field' => 'password',
+		'label' => 'lang:ui.password',
+		'rules' => 'required|min_length[8]|max_length[20]'
 	),
 );
