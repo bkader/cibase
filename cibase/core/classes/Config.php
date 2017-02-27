@@ -203,28 +203,54 @@ class CI_Config {
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Write configuration array into a file
+	 *
+	 * @access 	public
+	 * @param 	string 	$file 		config filename
+	 * @param 	array 	$config 	the configuration array to write
+	 * @param 	string 	$module 	in case of writing into a module's config folder
+	 * @param 	string 	$apppath 	where to write the file
+	 * @return 	bool
+	 *
+	 * @author 	Kader Bouyakoub <bkader@mail.com>
+	 * @link 	https://github.com/bkader
+	 * @link 	https://twitter.com/KaderBouyakoub
+	 */
 	public function save($file = '', $config = array(), $module = '', $apppath = APPPATH)
 	{
 		if (empty($file) OR empty($config)) {
 			return false;
 		}
 
-		$config_file = "config/{$file}";
+		$config_file = 'config/'.$file;
+        $found = false;
+        $module_path = null;
 
         // Look in module first.
-        $found = false;
         if ($module) {
         	foreach (config_item('modules_locations') as $location) {
-        		if (file_exists($file = $location.$module.'/'.$config_file.EXT)) {
+        		if (file_exists($location.$module.'/'.$config_file.EXT)) {
+        			$module_path = $location.$module.'/';
+        			$config_file = $module_path.$config_file;
         			$found = true;
+        		}
+        		elseif (is_dir($location.$module)) {
+        			$module_path = realpath($location.$module).DIRECTORY_SEPARATOR;
         		}
         	}
         }
 
         // Fallback to application folder
         if ( ! $found) {
-        	$config_file = "{$apppath}{$config_file}";
-        	$found = file_exists($config_file.EXT);
+        	if ($module_path !== NULL) {
+        		// Make sure the config folder is always there!
+        		is_dir($module_path.'config') OR mkdir($module_path.'config', 0777, TRUE);
+        		$config_file = $module_path.$config_file;
+        	} else {
+        		$config_file = $apppath.$config_file;
+        	}
+        	$found = is_file($config_file.'.php');
         }
 
         // If the file is found, we load its content
@@ -249,9 +275,15 @@ class CI_Config {
             if (is_array($val)) {
                 // Get the array output.
                 $val = $this->_array_output($val);
+            } elseif (in_array(strtolower($val), array('true', 'yes', 'on'))) {
+            	$val = 'true';
+            } elseif (in_array(strtolower($val), array('false', 'no', 'off'))) {
+            	$val = 'false';
+            } elseif (is_bool($val)) {
+            	$val = ($val === true) ? 'true' : 'false';
             } elseif (! is_numeric($val)) {
-                $val = "\"$val\"";
-            }
+                $val = "'$val'";
+			}
 
             // For a new file, just append the content. For an existing file, search
             // the file's content and replace the config setting.
@@ -271,24 +303,38 @@ class CI_Config {
 
         // Backup the file for safety.
         $source = $config_file.'.php';
-        $dest = ($module == '' ? "{$apppath}backup/{$file}" : $config_file).'.php.bak';
+        // We create new file depending on whether the module is set or not
+        if ($module && $module_path !== NULL) {
+        	// Make sure the backup folder exists or create it!
+        	if ( ! file_exists($backup_folder = $module_path.'backup')) {
+        		mkdir($backup_folder, 0777, TRUE);
+        	}
 
-        if ($empty === false) {
-            copy($source, $dest);
+        	$backup_file = $backup_folder.DIRECTORY_SEPARATOR.$file.'.php.bak';
+        } else {
+        	if ( ! file_exists($backup_folder = $apppath.'backup'))
+        	{
+        		mkdir($backup_folder, 0777, TRUE);
+        	}
+
+        	$backup_file = $backup_folder.DIRECTORY_SEPARATOR.$file.'.php.bak';
+        }
+
+        // We save our backup file first!
+        if ($empty === FALSE) {
+            copy($source, $backup_file);
         }
 
         // Make sure the file still has the php opening header in it...
-        if (strpos($content, '<?php') === false) {
+        if (strpos($content, '<?php') === FALSE) {
             $content = "<?php\ndefined('BASEPATH') OR exit('No direct script access allowed');\n\n".$content;
         }
 
         // Write the changes out...
-        if ( ! function_exists('write_file')) {
-            get_instance()->load->helper('file');
-        }
-        $result = write_file("{$config_file}.php", $content);
+        function_exists('write_file') OR get_instance()->load->helper('file');
+        $result = write_file($config_file.'.php', $content);
 
-        return $result !== false;
+        return $result !== FALSE;
 	}
 
 	// ------------------------------------------------------------------------
@@ -300,7 +346,11 @@ class CI_Config {
      * @param 	array 		array 		Values to store in the config.
      * @param 	integer 	$numtabs 	Optional number of tabs to use in front of array items
      * @return 	string/boolean 			A string containing the array values in the config file, or false.
-     */
+	 *
+	 * @author 	Kader Bouyakoub <bkader@mail.com>
+	 * @link 	https://github.com/bkader
+	 * @link 	https://twitter.com/KaderBouyakoub
+	 */
 	protected function _array_output($array, $numtabs = 1)
 	{
         if ( ! is_array($array)) {
@@ -548,46 +598,18 @@ class CI_Config {
         if ( ! empty($args = func_get_args()))
         {
             is_array($args[0]) && $args = $args[0];
-
-            switch (count($args)) {
-                case 1:
-                    // Ignore arguments below
-                    if (in_array($args[0], array(false, null)))
-                    {
-                        continue;
-                    }
-                    // If true is passed, the full array is returned
-                    elseif ($args[0] === true)
-                    {
-                        $lang = $this->_get_language($this->item('language'));
-                    }
-                    // If none of the above, we continue
-                    else {
-                        goto other;
-                    }
-                    break;
-
-                default:
-                    other:
-                    $language = $this->_get_language($this->item('language'));
-                    $_lang = array();
-
-                    // Loop through arguments and fill $_lang array only if the key exists
-                    foreach ($args as $arg)
-                    {
-                        if (isset($language[$arg]))
-                        {
-                            $_lang[$arg] = $language[$arg];
-                        }
-                    }
-
-                    // If $_lang is not empty, we replace $lang by it.
-                    // If a single key is found, we return it as it is.
-                    if ( ! empty($_lang))
-                    {
-                        $lang = (count($_lang) == 1) ? array_pop($_lang) : $_lang;
-                    }
-                    break;
+            $_lang = $this->_get_language($lang);
+            if (count($args) == 1 && isset($_lang[$args[0]])) {
+            	$lang = $_lang[$args[0]];
+            }
+            elseif (count($args) == 1 && in_array($args[0], array(true, false, null))) {
+            	$lang = $_lang;
+            }
+            elseif (count(array_intersect_key(array_flip($args), $_lang)) === count($args)) {
+            	$lang = $this->arr->subset($_lang, $args);
+            }
+            else {
+            	$lang = $_lang['code'];
             }
         }
 

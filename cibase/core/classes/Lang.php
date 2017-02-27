@@ -336,7 +336,7 @@ class CI_Lang {
 				if (strpos($arg, 'lang:') !== false)
 				{
 					$arg = str_replace('lang:', '', $arg);
-					$arg = $this->line($arg);
+					$arg = $this->get($arg);
 				}
 			}
 

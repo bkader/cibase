@@ -60,19 +60,20 @@ $route['translate_uri_dashes'] = false;
  */
 
 // Register
-Route::any('register', 'auth/register', array('as' => 'register'));
+Route::any('register', 'auth/register');
 Route::prefix('register', function() {
+	Route::any('resend', 'auth/resend');
 	Route::any('(resend|activate)', 'auth/$1');
 	Route::any('activate/([A-Za-z0-9_-]+)', 'auth/activate/$1');
 });
 
 // Login
-Route::any('login', 'auth/login', array('as' => 'login'));
+Route::any('login', 'auth/login');
 Route::prefix('login', function() {
 	Route::any('(recover|reset)', 'auth/$1');
 	Route::any('reset/([A-Za-z0-9_-]+)', 'auth/reset/$1');
 });
-Route::any('logout', 'auth/logout/index', array('as' => 'logout'));
+Route::any('logout', 'auth/logout/index');
 
 Route::block('auth/(:any)');
 
