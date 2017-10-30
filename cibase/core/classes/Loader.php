@@ -554,7 +554,7 @@ class CI_Loader {
 		{
 			$filename = basename($helper);
 			$filepath = ($filename === $helper) ? '' : substr($helper, 0, strlen($helper) - strlen($filename));
-			$filename = strtolower(preg_replace('#(_helper)?(.php)?$#i', '', $filename)).'_helper';
+			$filename = strtolower(preg_replace('#(_helper)?(\.php)?$#i', '', $filename)).'_helper';
 			$helper   = $filepath.$filename;
 
 			if (isset($this->_ci_helpers[$helper]))
@@ -1008,6 +1008,24 @@ class CI_Loader {
 			return $this->_ci_load_stock_library($class, $subdir, $params, $object_name);
 		}
 
+		// Safety: Was the class already loaded by a previous call?
+		if (class_exists($class, false))
+		{
+			$property = $object_name;
+			if (empty($property))
+			{
+				$property = strtolower($class);
+				isset($this->_ci_varmap[$property]) && $property = $this->_ci_varmap[$property];
+			}
+			$CI =& get_instance();
+			if (isset($CI->$property))
+			{
+				log_message('debug', $class.' class already loaded. Second attempt ignored.');
+				return;
+			}
+			return $this->_ci_init_library($class, '', $params, $object_name);
+		}
+
 		// Let's search for the requested library file and load it.
 		foreach ($this->_ci_library_paths as $path)
 		{
@@ -1355,7 +1373,7 @@ class CI_Loader {
 		if ( ! is_array($vars))
 		{
 			$vars = is_object($vars)
-				? get_object_vars($object)
+				? get_object_vars($vars)
 				: array();
 		}
 

@@ -102,10 +102,12 @@ if ( ! function_exists('ascii_to_entities'))
 	function ascii_to_entities($str)
 	{
 		$out = '';
-		for ($i = 0, $s = strlen($str) - 1, $count = 1, $temp = array(); $i <= $s; $i++)
+		$length = defined('MB_OVERLOAD_STRING')
+			? mb_strlen($str, '8bit') - 1
+			: strlen($str) - 1;
+		for ($i = 0, $count = 1, $temp = array(); $i <= $length; $i++)
 		{
 			$ordinal = ord($str[$i]);
-
 			if ($ordinal < 128)
 			{
 				/*
@@ -117,7 +119,6 @@ if ( ! function_exists('ascii_to_entities'))
 					$out .= '&#'.array_shift($temp).';';
 					$count = 1;
 				}
-
 				$out .= $str[$i];
 			}
 			else
@@ -126,27 +127,23 @@ if ( ! function_exists('ascii_to_entities'))
 				{
 					$count = ($ordinal < 224) ? 2 : 3;
 				}
-
 				$temp[] = $ordinal;
-
 				if (count($temp) === $count)
 				{
 					$number = ($count === 3)
 						? (($temp[0] % 16) * 4096) + (($temp[1] % 64) * 64) + ($temp[2] % 64)
 						: (($temp[0] % 32) * 64) + ($temp[1] % 64);
-
 					$out .= '&#'.$number.';';
 					$count = 1;
 					$temp = array();
 				}
 				// If this is the last iteration, just output whatever we have
-				elseif ($i === $s)
+				elseif ($i === $length)
 				{
 					$out .= '&#'.implode(';', $temp).';';
 				}
 			}
 		}
-
 		return $out;
 	}
 }

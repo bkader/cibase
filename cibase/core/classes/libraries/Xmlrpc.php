@@ -1848,11 +1848,9 @@ class XML_RPC_Values extends CI_Xmlrpc
 	 */
 	public function serializeval($o)
 	{
-		$ar = $o->me;
-		reset($ar);
-
-		list($typ, $val) = each($ar);
-		return "<value>\n".$this->serializedata($typ, $val)."</value>\n";
+		$array = $o->me;
+		list($value, $type) = array(reset($array), key($array));
+		return "<value>\n".$this->serializedata($type, $value)."</value>\n";
 	}
 
 	// --------------------------------------------------------------------

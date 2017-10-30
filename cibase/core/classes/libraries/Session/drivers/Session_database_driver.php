@@ -171,21 +171,20 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	{
 		// Prevent previous QB calls from messing with our queries
 		$this->_db->reset_query();
-
-		if ($this->_lock === false)
-		{
-			return $this->_fail();
-		}
+;
 		// Was the ID regenerated?
-		elseif ($session_id !== $this->_session_id)
+		if (isset($this->_session_id) && $session_id !== $this->_session_id)
 		{
 			if ( ! $this->_release_lock() OR ! $this->_get_lock($session_id))
 			{
 				return $this->_fail();
 			}
-
 			$this->_row_exists = false;
 			$this->_session_id = $session_id;
+		}
+		elseif ($this->_lock === false)
+		{
+			return $this->_fail();
 		}
 
 		if ($this->_row_exists === false)

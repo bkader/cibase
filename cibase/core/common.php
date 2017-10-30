@@ -409,23 +409,16 @@ if ( ! function_exists('get_mimes'))
 	function &get_mimes()
 	{
 		static $_mimes;
-
 		if (empty($_mimes))
 		{
+			$_mimes = file_exists(APPPATH.'config/mimes.php')
+				? include(APPPATH.'config/mimes.php')
+				: array();
 			if (file_exists(APPPATH.'config/'.ENVIRONMENT.'/mimes.php'))
 			{
-				$_mimes = include(APPPATH.'config/'.ENVIRONMENT.'/mimes.php');
-			}
-			elseif (file_exists(APPPATH.'config/mimes.php'))
-			{
-				$_mimes = include(APPPATH.'config/mimes.php');
-			}
-			else
-			{
-				$_mimes = array();
+				$_mimes = array_merge($_mimes, include(APPPATH.'config/'.ENVIRONMENT.'/mimes.php'));
 			}
 		}
-
 		return $_mimes;
 	}
 }
@@ -601,19 +594,16 @@ if ( ! function_exists('set_status_header'))
 		{
 			return;
 		}
-
 		if (empty($code) OR ! is_numeric($code))
 		{
 			show_error('Status codes must be numeric', 500);
 		}
-
 		if (empty($text))
 		{
 			is_int($code) OR $code = (int) $code;
 			$stati = array(
 				100	=> 'Continue',
 				101	=> 'Switching Protocols',
-
 				200	=> 'OK',
 				201	=> 'Created',
 				202	=> 'Accepted',
@@ -621,7 +611,6 @@ if ( ! function_exists('set_status_header'))
 				204	=> 'No Content',
 				205	=> 'Reset Content',
 				206	=> 'Partial Content',
-
 				300	=> 'Multiple Choices',
 				301	=> 'Moved Permanently',
 				302	=> 'Found',
@@ -629,7 +618,6 @@ if ( ! function_exists('set_status_header'))
 				304	=> 'Not Modified',
 				305	=> 'Use Proxy',
 				307	=> 'Temporary Redirect',
-
 				400	=> 'Bad Request',
 				401	=> 'Unauthorized',
 				402	=> 'Payment Required',
@@ -653,7 +641,6 @@ if ( ! function_exists('set_status_header'))
 				428	=> 'Precondition Required',
 				429	=> 'Too Many Requests',
 				431	=> 'Request Header Fields Too Large',
-
 				500	=> 'Internal Server Error',
 				501	=> 'Not Implemented',
 				502	=> 'Bad Gateway',
@@ -662,7 +649,6 @@ if ( ! function_exists('set_status_header'))
 				505	=> 'HTTP Version Not Supported',
 				511	=> 'Network Authentication Required',
 			);
-
 			if (isset($stati[$code]))
 			{
 				$text = $stati[$code];
@@ -672,16 +658,14 @@ if ( ! function_exists('set_status_header'))
 				show_error('No status text available. Please check your status code number or supply your own message text.', 500);
 			}
 		}
-
 		if (strpos(PHP_SAPI, 'cgi') === 0)
 		{
 			header('Status: '.$code.' '.$text, true);
+			return;
 		}
-		else
-		{
-			$server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
-			header($server_protocol.' '.$code.' '.$text, true, $code);
-		}
+		$server_protocol = (isset($_SERVER['SERVER_PROTOCOL']) && in_array($_SERVER['SERVER_PROTOCOL'], array('HTTP/1.0', 'HTTP/1.1', 'HTTP/2'), true))
+			? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+		header($server_protocol.' '.$code.' '.$text, true, $code);
 	}
 }
 
@@ -829,6 +813,7 @@ if ( ! function_exists('remove_invisible_characters'))
 		{
 			$non_displayables[] = '/%0[0-8bcef]/i';	// url encoded 00-08, 11, 12, 14, 15
 			$non_displayables[] = '/%1[0-9a-f]/i';	// url encoded 16-31
+			$non_displayables[] = '/%7f/i';			// url encoded 127
 		}
 
 		$non_displayables[] = '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S';	// 00-08, 11, 12, 14-31, 127

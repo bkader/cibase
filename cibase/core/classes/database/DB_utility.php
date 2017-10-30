@@ -275,9 +275,7 @@ abstract class CI_DB_utility {
 
 		return $xml.'</'.$root.'>'.$newline;
 	}
-
 	// --------------------------------------------------------------------
-
 	/**
 	 * Database Backup
 	 *
@@ -293,7 +291,6 @@ abstract class CI_DB_utility {
 		{
 			$params = array('tables' => $params);
 		}
-
 		// Set up our default preferences
 		$prefs = array(
 			'tables'		=> array(),
@@ -305,7 +302,6 @@ abstract class CI_DB_utility {
 			'newline'		=> "\n",
 			'foreign_key_checks'	=> true
 		);
-
 		// Did the user submit any preferences? If so set them....
 		if (count($params) > 0)
 		{
@@ -317,20 +313,17 @@ abstract class CI_DB_utility {
 				}
 			}
 		}
-
 		// Are we backing up a complete database or individual tables?
 		// If no table names were submitted we'll fetch the entire table list
 		if (count($prefs['tables']) === 0)
 		{
 			$prefs['tables'] = $this->db->list_tables();
 		}
-
 		// Validate the format
 		if ( ! in_array($prefs['format'], array('gzip', 'zip', 'txt'), true))
 		{
 			$prefs['format'] = 'txt';
 		}
-
 		// Is the encoder supported? If not, we'll either issue an
 		// error or use plain text depending on the debug settings
 		if (($prefs['format'] === 'gzip' && ! function_exists('gzencode'))
@@ -340,10 +333,8 @@ abstract class CI_DB_utility {
 			{
 				return $this->db->display_error('db_unsupported_compression');
 			}
-
 			$prefs['format'] = 'txt';
 		}
-
 		// Was a Zip file requested?
 		if ($prefs['format'] === 'zip')
 		{
@@ -360,14 +351,12 @@ abstract class CI_DB_utility {
 				{
 					$prefs['filename'] = str_replace('.zip', '', $prefs['filename']);
 				}
-
 				// Tack on the ".sql" file extension if needed
 				if ( ! preg_match('|.+?\.sql$|', $prefs['filename']))
 				{
 					$prefs['filename'] .= '.sql';
 				}
 			}
-
 			// Load the Zip class and output it
 			$CI =& get_instance();
 			$CI->load->library('zip');
@@ -382,7 +371,6 @@ abstract class CI_DB_utility {
 		{
 			return gzencode($this->_backup($prefs));
 		}
-
 		return;
 	}
 

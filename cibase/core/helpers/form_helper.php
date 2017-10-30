@@ -566,22 +566,12 @@ if ( ! function_exists('form_label'))
 	 */
 	function form_label($label_text = '', $id = '', $attributes = array())
 	{
-
 		$label = '<label';
-
 		if ($id !== '')
 		{
 			$label .= ' for="'.$id.'"';
 		}
-
-		if (is_array($attributes) && count($attributes) > 0)
-		{
-			foreach ($attributes as $key => $val)
-			{
-				$label .= ' '.$key.'="'.$val.'"';
-			}
-		}
-
+		$label .= _attributes_to_string($attributes);
 		return $label.'>'.$label_text.'</label>';
 	}
 }

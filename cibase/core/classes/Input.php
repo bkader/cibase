@@ -323,7 +323,7 @@ class CI_Input {
 	 * @param	bool		$httponly	Whether to only makes the cookie accessible via HTTP (no javascript)
 	 * @return	void
 	 */
-	public function set_cookie($name, $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false, $httponly = false)
+	public function set_cookie($name, $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = null, $httponly = null)
 	{
 		if (is_array($name))
 		{
@@ -352,15 +352,16 @@ class CI_Input {
 			$path = config_item('cookie_path');
 		}
 
-		if ($secure === false && config_item('cookie_secure') === true)
+		$secure = ($secure === null && config_item('cookie_secure') !== null)
+				? (bool) config_item('cookie_secure')
+				: (bool) $secure;
 		{
 			$secure = config_item('cookie_secure');
 		}
 
-		if ($httponly === false && config_item('cookie_httponly') !== false)
-		{
-			$httponly = config_item('cookie_httponly');
-		}
+		$httponly = ($httponly === null && config_item('cookie_httponly') !== null)
+				? (bool) config_item('cookie_httponly')
+				: (bool) $httponly;
 
 		if ( ! is_numeric($expire))
 		{
