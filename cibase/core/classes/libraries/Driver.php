@@ -88,11 +88,11 @@ class CI_Driver_Library {
 			foreach ($paths as $path)
 			{
 				// Does the file exist?
-				$file = $path.'libraries/'.$this->lib_name.'/drivers/'.$prefix.$child_name.'.php';
+				$file = $path.'classes/libraries/'.$this->lib_name.'/drivers/'.$prefix.$child_name.'.php';
 				if (file_exists($file))
 				{
 					// Yes - require base class from BASEPATH
-					$basepath = BASEPATH.'libraries/'.$this->lib_name.'/drivers/'.$child_name.'.php';
+					$basepath = BASEPATH.'classes/libraries/'.$this->lib_name.'/drivers/'.$child_name.'.php';
 					if ( ! file_exists($basepath))
 					{
 						$msg = 'Unable to load the requested class: CI_'.$child_name;
@@ -120,7 +120,7 @@ class CI_Driver_Library {
 				foreach ($paths as $path)
 				{
 					// Does the file exist?
-					$file = $path.'libraries/'.$this->lib_name.'/drivers/'.$child_name.'.php';
+					$file = $path.'classes/libraries/'.$this->lib_name.'/drivers/'.$child_name.'.php';
 					if (file_exists($file))
 					{
 						// Include source

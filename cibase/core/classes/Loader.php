@@ -259,7 +259,7 @@ class CI_Loader {
 		//       sub-optimal otherwise anyway.
 		if ( ! class_exists('CI_Model', false))
 		{
-			$app_path = APPPATH.'core'.DIRECTORY_SEPARATOR;
+			$app_path = APPPATH.'classes'.DS;
 			if (file_exists($app_path.'Model.php'))
 			{
 				require_once($app_path.'Model.php');
@@ -270,7 +270,7 @@ class CI_Loader {
 			}
 			elseif ( ! class_exists('CI_Model', false))
 			{
-				require_once(BASEPATH.'core'.DIRECTORY_SEPARATOR.'Model.php');
+				require_once(BASEPATH.'classes'.DS.'Model.php');
 			}
 
 			$class = config_item('subclass_prefix').'Model';
@@ -294,7 +294,7 @@ class CI_Loader {
 					continue;
 				}
 
-				require_once($mod_path.'models/'.$path.$model.'.php');
+				require_once($mod_path.'classes/models/'.$path.$model.'.php');
 				if ( ! class_exists($model, false))
 				{
 					throw new RuntimeException($mod_path."classes/models/".$path.$model.".php exists, but doesn't declare class ".$model);

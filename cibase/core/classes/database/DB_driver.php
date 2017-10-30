@@ -725,8 +725,8 @@ abstract class CI_DB_driver {
 
 		if ( ! class_exists($driver, false))
 		{
-			require_once(BASEPATH.'database/DB_result.php');
-			require_once(BASEPATH.'database/drivers/'.$this->dbdriver.'/'.$this->dbdriver.'_result.php');
+			require_once(BASEPATH.'classes/database/DB_result.php');
+			require_once(BASEPATH.'classes/database/drivers/'.$this->dbdriver.'/'.$this->dbdriver.'_result.php');
 		}
 
 		return $driver;
@@ -1652,7 +1652,7 @@ abstract class CI_DB_driver {
 	{
 		if ( ! class_exists('CI_DB_Cache', false))
 		{
-			require_once(BASEPATH.'database/DB_cache.php');
+			require_once(BASEPATH.'classes/database/DB_cache.php');
 		}
 		elseif (is_object($this->CACHE))
 		{
@@ -1733,7 +1733,7 @@ abstract class CI_DB_driver {
 					$call['file'] = str_replace('\\', '/', $call['file']);
 				}
 
-				if (strpos($call['file'], BASEPATH.'database') === false && strpos($call['class'], 'Loader') === false)
+				if (strpos($call['file'], BASEPATH.'classes/database') === false && strpos($call['class'], 'Loader') === false)
 				{
 					// Found it - use a relative path for safety
 					$message[] = 'Filename: '.str_replace(array(APPPATH, BASEPATH), '', $call['file']);
