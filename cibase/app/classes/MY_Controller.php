@@ -14,6 +14,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Controller extends CI_Controller
 {
 	/**
+	 * To use Laravel static routes.
+	 */
+	private $__filter_params;
+
+	/**
 	 * Files to be auto-loaded
 	 * @var 	array
 	 */
@@ -55,9 +60,19 @@ class MY_Controller extends CI_Controller
 	 */
 	protected $data = array();
 
+	/**
+	 * Class constructor
+	 */
 	public function __construct()
 	{
 		parent::__construct();
+		$this->__filter_params = array($this->uri->uri_string());
+		$this->call_filters('before');
+
+		// Github buttons (Remove this please)
+		$this->theme->add_js('https://buttons.github.io/buttons.js');
+
+		log_message('debug', 'MY_Controller Class Initialized');
 	}
 
     // ------------------------------------------------------------------------
@@ -84,7 +99,7 @@ class MY_Controller extends CI_Controller
 		unset($this->languages[$this->language['code']]);
 
 		// Set some global variables
-		$this->template->set(array(
+		$this->theme->set(array(
 			'language' => $this->language,
 			'languages' => $this->languages,
 			'site_name' => config('app.name'), // Use @$site_name to avoid errors
@@ -157,6 +172,55 @@ class MY_Controller extends CI_Controller
 
 		// Is there a after() method?
 		method_exists($this, 'after') && $this->after();
+		($method != 'call_filters') && $this->call_filters('after');
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Calls filters at routing.
+	 *
+	 * @param string $type
+	 */
+	private function call_filters($type)
+	{
+		$loaded_route = $this->router->get_active_route();
+		$filter_list = Route::get_filters($loaded_route, $type);
+
+		foreach ($filter_list as $filter_data)
+		{
+			$param_list = $this->__filter_params;
+
+			$callback = $filter_data['filter'];
+			$params = $filter_data['parameters'];
+
+			// check if callback has parameters
+			if ( ! is_null($params))
+			{
+				// separate the multiple parameters in case there are defined
+				$params = explode(':', $params);
+
+				// search for uris defined as parameters, they will be marked as {(.*)}
+				foreach ($params as &$p)
+				{
+					if (preg_match('/\{(.*)\}/', $p, $match_p))
+					{
+						$p = $this->uri->segment($match_p[1]);
+					}
+				}
+
+				$param_list = array_merge($param_list, $params);
+			}
+
+			if (class_exists('Closure') and method_exists('Closure', 'bind'))
+			{
+				$callback = Closure::bind($callback, $this);
+			}
+
+			call_user_func_array($callback, $param_list);
+		}
+
+		log_message('debug', "\"{$type}\" Filter Called");
 	}
 
 	// ------------------------------------------------------------------------
@@ -172,52 +236,21 @@ class MY_Controller extends CI_Controller
 	 * @link 	https://github.com/bkader
 	 * @link 	https://twitter.com/KaderBouyakoub
 	 */
-	public function prepare_form($rules = array())
+	protected function prepare_form($rules = array())
 	{
-		// Load form validation library if not alreadu loaded
-		if ( ! class_exists('CI_Form_validation')) {
+		// Load validation form if not already loaded.
+		if ( ! class_exists('CI_Form_validation', false))
 			$this->load->library('form_validation');
-		}
 
-		// Load form helper if not already loaded
-		if ( ! function_exists('form_open')) {
-			$this->load->helper('form');
-		}
+		// Hack to make form validation HMVC work.
+		$this->form_validation->CI =& $this;
 
-		// Set rules
-		if ( ! empty($rules) && is_array($rules)) {
-			$this->form_validation->set_rules($rules);
-		}
+		// Load form helper if not already loaded.
+		(function_exists('form_open')) or $this->load->helper('form');
+
+		// Area they any rules to use?
+		empty($rules) or $this->form_validation->set_rules($rules);
 	}
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * This method sets a flash message to be displayed after a redirect
-     *
-     * @access  public
-     * @param   string  $message    the message of the flash message
-     * @param   string  $type       type of the flash message
-     * @param   string  $heading 	message heading
-     * @return  void
-     *
-     * @author 	Kader Bouyakoub <bkader@mail.com>
-     * @link 	https://github.com/bkader
-     * @link 	https://twitter.com/KaderBouyakoub
-     */
-    public function set_flash_message($message = '', $type = 'info', $heading = '')
-    {
-        class_exists('CI_Session') OR $this->load->library('session');
-
-        if ( ! empty($message))
-        {
-            $this->session->set_flashdata('__ci_flash', array(
-                'type'    => $type,
-                'heading' => $heading,
-                'message' => $message,
-            ));
-        }
-    }
 
     // ------------------------------------------------------------------------
 
@@ -228,54 +261,10 @@ class MY_Controller extends CI_Controller
 	 * @return 	void
 	 */
     public function after($params = '')
-    {}
+    {
+    	//
+    }
 }
-
-// ------------------------------------------------------------------------
-
-/**
- * Public_Controller
- *
- * All application controllers should extend this class.
- *
- * @package 	CodeIgniter
- * @category 	Core
- * @author 	Kader Bouyakoub <bkader@mail.com>
- * @link 	https://github.com/bkader
- */
-
-class Public_Controller extends MY_Controller
-{}
-
-// ------------------------------------------------------------------------
-
-/**
- * Private_Controller
- *
- * Controllers extending this class are NEVER accessible via URL
- *
- * @package 	CodeIgniter
- * @category 	Core
- * @author 	Kader Bouyakoub <bkader@mail.com>
- * @link 	https://github.com/bkader
- * @link 	https://twitter.com/KaderBouyakoub
- */
-
-class Private_Controller extends Public_Controller {
-	/**
-	 * Remapping and always show_404 in case of direct access
-	 *
-	 * @access 	public
-	 * @param 	string 	$method 	method's name
-	 * @param 	mixed 	$params 	parameters to pass
-	 * @return 	void
-	 */
-	public function _remap($method, $params = array())
-	{
-		show_404();
-	}
-}
-
 
 // ------------------------------------------------------------------------
 
@@ -290,7 +279,7 @@ class Private_Controller extends Public_Controller {
  * @link 	https://github.com/bkader
  */
 
-class Ajax_Controller extends Public_Controller
+class Ajax_Controller extends MY_Controller
 {
 	/**
 	 * Constructor
@@ -303,8 +292,7 @@ class Ajax_Controller extends Public_Controller
 		// Make sure the request is always AJAX
 		if ( ! $this->input->is_ajax_request())
 		{
-			redirect('', 'refresh');
-			exit;
+			show_404();
 		}
 	}
 }
@@ -322,7 +310,7 @@ class Ajax_Controller extends Public_Controller
  * @link 	https://github.com/bkader
  */
 
-class User_Controller extends Public_Controller
+class User_Controller extends MY_Controller
 {
 	/**
 	 * Ignored URI when redirecting to login
@@ -340,14 +328,14 @@ class User_Controller extends Public_Controller
 		parent::before();
 
 		// Prepare redirection URL
-		$uri = $this->uri->uri_string();
-		in_array($uri, $this->ignored_pages) && $uri = '';
+		// $uri = $this->uri->uri_string();
+		// in_array($uri, $this->ignored_pages) && $uri = '';
 
-		// Login check logic
+		// // Login check logic
 		// if ( ! $this->auth_lib->is_logged_in())
 		// {
-			redirect(Route::named('login').'?next='.urlencode($uri), 'refresh');
-			exit;
+		// 	redirect(Route::named('login').'?next='.urlencode($uri), 'refresh');
+		// 	exit;
 		// }
 	}
 }

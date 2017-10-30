@@ -53,29 +53,38 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = false;
 
+// Routes patterns.
+Route::pattern('id',       '[0-9]+');
+Route::pattern('key',      '[A-Za-z0-9\_\-]+');
+Route::pattern('method',   '[a-z\_]+');
+Route::pattern('username', '[A-Za-z0-9]+');
+
+// ------------------------------------------------------------------------
+// Start of Routes.
+// ------------------------------------------------------------------------
+
+// Remove this line because it's for demonstration only.
+Route::get('admin/semantic', 'admin/admin/semantic');
+
+// ------------------------------------------------------------------------
+// End of Routes.
+// ------------------------------------------------------------------------
+
 /**
- * ============================================
- * Authentication module
- * ============================================
+ * Admin Context.
+ * Each site module can have an admin area that will be accessible on
+ * "yoursite.com/admin/module", you only need to create the controller
+ * "Admin.php" inside "modules/your_module/controllers" and make it extend
+ * Admin_Controller.
  */
+Route::context('admin', 'admin', array('home' => 'admin/index'));
 
-// Register
-Route::any('register', 'auth/register');
-Route::prefix('register', function() {
-	Route::any('resend', 'auth/resend');
-	Route::any('(resend|activate)', 'auth/$1');
-	Route::any('activate/([A-Za-z0-9_-]+)', 'auth/activate/$1');
-});
-
-// Login
-Route::any('login', 'auth/login');
-Route::prefix('login', function() {
-	Route::any('(recover|reset)', 'auth/$1');
-	Route::any('reset/([A-Za-z0-9_-]+)', 'auth/reset/$1');
-});
-Route::any('logout', 'auth/logout/index');
-
-Route::block('auth/(:any)');
+/**
+ * For AJAX calls, I made a class Ajax_Controller that should
+ * be used for controllers requiring AJAX calls.
+ * A module can have an ajax controller, just like 'admin' above.
+ */
+Route::context('ajax', 'ajax', array('home' => 'ajax/index'));
 
 // Always keeps this line at the end
 $route = Route::map($route);

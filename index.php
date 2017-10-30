@@ -63,6 +63,12 @@ defined('DS') OR define('DS', DIRECTORY_SEPARATOR);
 defined('EXT') OR define('EXT', '.php');
 
 /**
+ * Define Application name and version.
+ */
+defined('APP_NAME')    OR define('APP_NAME', 'CodeIgniter');
+defined('APP_VERSION') OR define('APP_VERSION', '0.1.0');
+
+/**
  * Site public root.
  */
 define('FCPATH', __DIR__.DS);
@@ -96,6 +102,11 @@ define('APPPATH', realpath(DOCROOT.DS.'app/').DS);
 define('VIEWPATH', realpath(APPPATH.'views/').DS);
 
 /**
+ * Path to common modules path.
+ */
+define('MODPATH', realpath(DOCROOT.'modules/').DS);
+
+/**
  * Path to default packages folder.
  */
 define('PKGPATH', realpath(DOCROOT.'packages/').DS);
@@ -104,6 +115,16 @@ define('PKGPATH', realpath(DOCROOT.'packages/').DS);
 if (defined('STDIN'))
 {
 	chdir(dirname(__FILE__));
+}
+
+/**
+ * Add some helpers.
+ */
+require_once DOCROOT.'vendor/common/common.php';
+
+if (ENVIRONMENT <> 'production')
+{
+	require_once DOCROOT.'vendor/common/print_d.php';
 }
 
 /**

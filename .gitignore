@@ -1,5 +1,7 @@
 cibase/app/cache/*
 !cibase/app/cache/.gitkeep
 cibase/app/config/encryption_key.php
+cibase/app/config/development/encryption_key.php
+cibase/app/config/production/encryption_key.php
 cibase/app/logs/*
 !cibase/app/logs/.gitkeep

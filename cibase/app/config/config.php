@@ -23,12 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-// Set yours or let me guess for you
-// $config['base_url'] = '';
-
-$root = "http://".$_SERVER['HTTP_HOST'];
-$root .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
-$config['base_url'] = "$root";
+$config['base_url'] = ''; // See ENVIRONMENT config file.
 
 /*
 |--------------------------------------------------------------------------
@@ -357,7 +352,11 @@ $config['cache_query_string'] = false;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-if (file_exists(APPPATH.'config/encryption_key.php'))
+if (file_exists(APPPATH.'config/'.ENVIRONMENT.'/encryption_key.php'))
+{
+	require_once(APPPATH.'config/'.ENVIRONMENT.'/encryption_key.php');
+}
+elseif (file_exists(APPPATH.'config/encryption_key.php'))
 {
 	require_once(APPPATH.'config/encryption_key.php');
 }
@@ -365,11 +364,18 @@ else
 {
 	if ( ! is_writable(APPPATH.'config/'))
 	{
-		die('The '.APPPATH.'/config/ folder is not writable.');
+		die('The '.APPPATH.'config/ folder is not writable.');
 	}
 
-	$file = fopen(APPPATH.'config/encryption_key.php', 'w');
+	// Write file to ENVIRONMENT folder if it exists and is writable.
+	$key_path = APPPATH.'config/'.ENVIRONMENT;
+	if ( ! is_dir($key_path) OR ! is_writable($key_path))
+	{
+		$key_path = APPPATH.'config';
+	}
+	$key_path .= '/encryption_key.php';
 
+	$file = fopen($key_path, 'w');
 	$encryption_key = uniqid().uniqid().uniqid().uniqid();
 	$content =<<<EOD
 <?php
@@ -390,7 +396,8 @@ EOD;
 	fwrite($file, $content);
 	fclose($file);
 }
-$config['encryption_key'] = hex2bin(@$encryption_key);
+
+$config['encryption_key'] = hex2bin($encryption_key);
 
 /*
 |--------------------------------------------------------------------------
@@ -598,4 +605,7 @@ $config['proxy_ips'] = '';
 | directory.
 |
 */
-$config['modules_locations'] = array(APPPATH.'modules/');
+$config['modules_locations'] = array(
+	APPPATH.'modules/',
+	MODPATH
+);

@@ -229,7 +229,7 @@ class CI_Config {
 
         // Look in module first.
         if ($module) {
-        	foreach (config_item('modules_locations') as $location) {
+        	foreach (Modules::folders() as $location) {
         		if (file_exists($location.$module.'/'.$config_file.EXT)) {
         			$module_path = $location.$module.'/';
         			$config_file = $module_path.$config_file;

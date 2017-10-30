@@ -43,7 +43,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 	require_once BASEPATH.'classes/arr.php';
 	$ARR = new CI_Arr;
-	// $ARR =& load_class('Arr', 'core');
 
 /*
  * ------------------------------------------------------
@@ -282,7 +281,6 @@ if ( ! is_php('5.4'))
  * set the routing
  * ------------------------------------------------------
  */
-	require_once BASEPATH.'classes/Route.php';
 	$RTR =& load_class('Router', 'core', isset($routing) ? $routing : null);
 
 /*
@@ -381,8 +379,8 @@ if ( ! is_php('5.4'))
 	// Are we calling a module?
 	if ( ! empty($module))
 	{
-		$locations = config_item('modules_locations');
-		$locations[] = APPPATH;
+		$locations = config('modules_locations');
+		array_push($locations, APPPATH);
 
 		foreach ($locations as $location)
 		{
